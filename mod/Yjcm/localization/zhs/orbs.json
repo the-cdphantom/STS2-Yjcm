@@ -14,7 +14,7 @@
   "YJCM_ORB_GUAN_SHI_FU_ORB.title": "贯石斧",
   "YJCM_ORB_GUAN_SHI_FU_ORB.description": "伤害被完全格挡后，可弃置2张牌造成等量无法格挡的伤害。",
   "YJCM_ORB_ZHU_QUE_YU_SHAN_ORB.title": "朱雀羽扇",
-  "YJCM_ORB_ZHU_QUE_YU_SHAN_ORB.description": "每次攻击使敌人获得2层[gold]火攻[/gold]。",
+  "YJCM_ORB_ZHU_QUE_YU_SHAN_ORB.description": "每次攻击使敌人获得2层{FanFireText}。",
   "YJCM_ORB_ZHU_GE_LIAN_NU_ORB.title": "诸葛连弩",
   "YJCM_ORB_ZHU_GE_LIAN_NU_ORB.description": "所有攻击牌费用-1。",
   "YJCM_ORB_CI_XIONG_SHUANG_GU_JIAN_ORB.title": "雌雄双股剑",

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Loader;
-using HarmonyLib;
 using MegaCrit.Sts2.Core.Debug;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
@@ -13,15 +12,29 @@ public static class LoaderBootstrap
 {
     private const string ModId = "Yjcm";
     private const string VersionedDllPrefix = "Yjcm.";
+    private static readonly object InitializationGate = new();
     private static Assembly? _realAssembly;
+    private static bool _initializing;
+    private static bool _initialized;
 
     public static void Initialize()
+    {
+        lock (InitializationGate)
+        {
+            if (_initialized || _initializing) return;
+            _initializing = true;
+            try { _initialized = InitializeCore(); }
+            finally { _initializing = false; }
+        }
+    }
+
+    private static bool InitializeCore()
     {
         string? modRoot = Path.GetDirectoryName(typeof(LoaderBootstrap).Assembly.Location);
         if (string.IsNullOrEmpty(modRoot))
         {
             Log.Error("[Yjcm.Loader] 无法定位 mod 根目录", 2);
-            return;
+            return false;
         }
 
         string hostText = ReleaseInfoManager.Instance?.ReleaseInfo?.Version ?? "";
@@ -30,7 +43,7 @@ public static class LoaderBootstrap
         if (realDll == null)
         {
             Log.Error($"[Yjcm.Loader] 未找到可用真实 DLL（宿主版本 {hostText}）", 2);
-            return;
+            return false;
         }
 
         Assembly real;
@@ -43,44 +56,24 @@ public static class LoaderBootstrap
         catch (Exception ex)
         {
             Log.Error($"[Yjcm.Loader] 加载真实 DLL 失败: {ex}", 2);
-            return;
+            return false;
         }
 
         _realAssembly = real;
+        AssociateAssemblyWithMod(real);
+        if (!InvokeRequiredBootstrap(real, "Yjcm.MainFile", "Initialize", "内容初始化"))
+        {
+            _realAssembly = null;
+            return false;
+        }
+
         try { ModManager.OnModDetected += OnModDetected; }
         catch (Exception ex) { Log.Warn($"[Yjcm.Loader] 订阅 OnModDetected 失败: {ex.Message}", 2); }
-
-        AssociateAssemblyWithMod(real);
-        InvokeOptionalBootstrap(real, "Yjcm.WuZhugeliangSettings", "Register", "设置");
-        InvokeOptionalBootstrap(real, "Yjcm.WuZhugeliangTelemetry", "Register", "遥测");
-
-        try
-        {
-            var harmony = new Harmony(ModId);
-            var patchTypes = real.GetTypes()
-                .Where(t => t.GetCustomAttributes(typeof(HarmonyPatch), false).Length != 0)
-                .ToList();
-            int ok = 0, failed = 0;
-            foreach (Type type in patchTypes)
-            {
-                try { harmony.CreateClassProcessor(type).Patch(); ok++; }
-                catch (Exception ex)
-                {
-                    failed++;
-                    Log.Warn($"[Yjcm.Loader] 补丁挂载失败（已跳过）: {type.Name}: {ex.Message}", 2);
-                }
-            }
-            Log.Info($"[Yjcm.Loader] PatchAll 完成: 成功={ok} 失败={failed}（共 {patchTypes.Count}）", 2);
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"[Yjcm.Loader] Harmony.PatchAll 失败: {ex}", 2);
-        }
-
         Log.Info($"[Yjcm.Loader] 已加载变体 {Path.GetFileName(realDll)}（宿主版本 {hostText}）", 2);
+        return true;
     }
 
-    private static void InvokeOptionalBootstrap(Assembly real, string typeName, string methodName, string label)
+    private static bool InvokeRequiredBootstrap(Assembly real, string typeName, string methodName, string label)
     {
         try
         {
@@ -88,20 +81,23 @@ public static class LoaderBootstrap
                 methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
                 null, Type.EmptyTypes, null);
             if (method == null)
-                Log.Warn($"[Yjcm.Loader] 未找到{label}入口 {typeName}.{methodName}", 2);
-            else
             {
-                method.Invoke(null, null);
-                Log.Info($"[Yjcm.Loader] {label}入口调用完成", 2);
+                Log.Error($"[Yjcm.Loader] 未找到必需的{label}入口 {typeName}.{methodName}", 2);
+                return false;
             }
+            method.Invoke(null, null);
+            Log.Info($"[Yjcm.Loader] {label}入口调用完成", 2);
+            return true;
         }
         catch (TargetInvocationException ex)
         {
-            Log.Warn($"[Yjcm.Loader] {label}入口调用失败: {ex.InnerException?.Message ?? ex.Message}", 2);
+            Log.Error($"[Yjcm.Loader] {label}入口调用失败: {ex.InnerException ?? ex}", 2);
+            return false;
         }
         catch (Exception ex)
         {
-            Log.Warn($"[Yjcm.Loader] {label}入口调用失败: {ex.Message}", 2);
+            Log.Error($"[Yjcm.Loader] {label}入口调用失败: {ex}", 2);
+            return false;
         }
     }
 

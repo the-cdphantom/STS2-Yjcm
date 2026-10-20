@@ -253,7 +253,7 @@
       "originalPoolListed": true,
       "source": "mod/src/Cards/ZhuQueYuShan.cs",
       "generatedTypes": [],
-      "sourceSha256": "deffd04867d356d8ebd40c4314ff5b91efb4f203e3d534265ce2f9bf46bcda5d",
+      "sourceSha256": "d6c7516fff383f16e7623dca72036e4755d20ec149e2bab4ccbd9c60ecf67479",
       "token": false
     },
     {
@@ -1850,8 +1850,8 @@
     }
   ],
   "inputHashes": {
-    "mod/Yjcm/localization/zhs/cards.json": "171b9b63912a07b1e669611d3938132f4a5fa04d3005476116afad60de56f61c",
-    "mod/Yjcm/localization/zhs/orbs.json": "d8beecb63d720051e7e1fff6654b85a966b313f26c2aa35ee7733846807eb71a",
+    "mod/Yjcm/localization/zhs/cards.json": "9dcb0f1501636078a9d7497da5afa853a16448cc688bbbacdb3e7e69c2d56452",
+    "mod/Yjcm/localization/zhs/orbs.json": "a2fe77e8c448dcec15f835c49885107b350d1b66a0310ba9b8c058690a52c3e4",
     "mod/src/CardPools/WuZhugeliangCardPool.cs": "5f3ee30f3798441ec9b7ce840db23ec578b27f03f828926b65af88e9ff31b826",
     "mod/src/Cards/BaGuaZhen.cs": "23522be4dba44ede5e2866b64d5b59de6bdf9c73fad0a07af70424a27c4461a3",
     "mod/src/Cards/BaiYinShiZi.cs": "e5bf00e118c18c088626eefe64ad68925a5149886d9719acaea94222fa8132da",
@@ -1937,14 +1937,14 @@
     "mod/src/Cards/XingFaZhengZhiJi.cs": "a0a4cada9abf44038bcccb762ba32df732247a95c05c3bc7c7f53def4ae8f0a0",
     "mod/src/Cards/XingXiaHouBaJueFa.cs": "b1209d1943c944e81592d42c491348f9a7977f51d8fd878e9b54d6007e5f581e",
     "mod/src/Cards/XingXiaHouBaWeiGu.cs": "bfa72eb00df8b1c8afc5b01399251edbbafe624cd18a03983ee5b5e66cb64950",
-    "mod/src/Cards/YiZhenQingMeng.cs": "d37e0e19a7c8f0fff607d1a02775ee1520b63162749330c0d66c2bdf946d16b8",
+    "mod/src/Cards/YiZhenQingMeng.cs": "c0e631f9caa3e447b9020d8c7d479dc528c1193bee60d75f0b3166c3f6d2fe1b",
     "mod/src/Cards/YjcmAccact.cs": "b93369b4d1f451855a268112074b54b97899eb879b2711c7db7d9a9239197008",
     "mod/src/Cards/YjcmCard.cs": "b7bf150f8fac175f572cb625c65f3732c5b2ea336900b349bdfd93873cb13d50",
     "mod/src/Cards/ZhangBaSheMao.cs": "d94aeeae79cdde11fbf161e61cc31bbe292258930f151656edca77e4fcc19e4a",
     "mod/src/Cards/ZhangYiMuRui.cs": "75164d5a5ebebdf369ccb3f773982613da9a23ab5c5aa6e97e71ee7d3ef530d5",
     "mod/src/Cards/ZhiZhe.cs": "e17acbd1e5cef4f4501bb040f0f28b317a9ca826b326b7ddd601ae962b158399",
     "mod/src/Cards/ZhuGeLianNu.cs": "e4ad40268a860b1520536b121cef8a4118c80ca277a121a66568f19239d230e9",
-    "mod/src/Cards/ZhuQueYuShan.cs": "deffd04867d356d8ebd40c4314ff5b91efb4f203e3d534265ce2f9bf46bcda5d",
+    "mod/src/Cards/ZhuQueYuShan.cs": "d6c7516fff383f16e7623dca72036e4755d20ec149e2bab4ccbd9c60ecf67479",
     "mod/src/Cards/ZhugeJunGengDu.cs": "62d073b12a7d7087d40a9f608f8c5d549502dcbbd62412014df3d477d0a9b90c",
     "mod/src/Cards/ZhugeJunGuMai.cs": "ec6f85ee322dd591191e3eeeff2d90f9007638d8f23080445ef7655e8724dee7",
     "mod/src/Cards/ZhugeliangGuanXing.cs": "465ea76da8560d784b04798a520db2dea85791cda52da7a0efe003a112303995",
@@ -1978,7 +1978,7 @@
     "mod/src/Orbs/RenWangDunOrb.cs": "8874e1e926b00e7b0302b2bc7dc0f3557932e8e708a00fc9a0a099d310621984",
     "mod/src/Orbs/ZhangBaSheMaoOrb.cs": "1c563744bbdafad478a56ec4552255054d74338ce6c15272a5c312f8f546df58",
     "mod/src/Orbs/ZhuGeLianNuOrb.cs": "cc0153e8657f6c73c12c16a7b7f0d409926e269f2a9f45d3e6e7eb1974f4c1cc",
-    "mod/src/Orbs/ZhuQueYuShanOrb.cs": "892203e8f636fc7dac805a72827ff8fd8366f93cfe58bc8a1b19c9a7cc22f886",
+    "mod/src/Orbs/ZhuQueYuShanOrb.cs": "02d73c31b62a9258b384975a62453137c64fac7774065a35fb1ff9844be99243",
     "mod/src/Orbs/ZiXingOrb.cs": "f0ec56ca8cff54a54c125aa6e19c8cc082f6b2eef902b6e6e325275b34830903",
     "mod/src/Patches/AntiPiracyNotice.cs": "d764541272b6988eab048c75afc7c6af511078e1b857e397ff555f141aaf4379",
     "mod/src/Patches/LeBuSiShuHoverTipsPatch.cs": "aa2355671f1aa44aaecdb4af4e13233a91fd454d739bba62a42cdab0ddd2198d",
@@ -1992,7 +1992,7 @@
     "mod/src/Patches/WuJiangExtraHoverTipsPatch.cs": "30d8654c73e10ee42affc428c5054863013dd6c1f04044d9150876720dbbef0c",
     "mod/src/Patches/WuZhugeliangMeshVisualsPatch.cs": "b8782eeec9a1235bb62adf547621577bb1715ffaedaf36fb550a05102123e6e6",
     "mod/src/Patches/WuZhugeliangSkinPatch.cs": "21f99bc0c7332c0331252c7352203824e1e3107c1d9bb0bf508aa7d749130616",
-    "mod/src/Patches/YjcmPatches.cs": "72363c23931c113cca5a5beeec77eb1f49b99b3248d5783645f384bd28dcf947",
+    "mod/src/Patches/YjcmPatches.cs": "661aa2c97f0c7293491de036f6601eda07bed4a05399b4c14bba060204942a1f",
     "mod/src/Powers/BeiFaPower.cs": "fc358a1c7e3729550b6c55229cf08de131579e11f10e8b8f4e675120cd8faeab",
     "mod/src/Powers/BiBuPower.cs": "8651e33d21f69f10c67572104cc9d83e9392e8d6f4705ab99edf9aa8c79c44f9",
     "mod/src/Powers/CaiXiaPower.cs": "0751cad421d0b9cada981a0efd0210fae4fb18612421949f6c55b0891e9dfa1c",
@@ -2023,7 +2023,7 @@
     "mod/src/Powers/XiXingPower.cs": "3282c008702ea8574f82b6520e2ad41e9bf25e817e9df1b900c96ccdcea01ec2",
     "mod/src/Powers/XingPower.cs": "e42f1db7f76ba42473b2529f8c2b09dd37bd5b2df8dd721b1960cea55910a68c",
     "mod/src/Powers/XunShiJudgmentPower.cs": "e0c15448757d55657fadab0c22ebfa4c3cd1277580d11cea54f9bcc7ea14060f",
-    "mod/src/Powers/YiZhenQingMengPower.cs": "e48b8e7493cd19acdda75147e8ba83956e41b7354d33ce537e0779ba7c9a7472",
+    "mod/src/Powers/YiZhenQingMengPower.cs": "9af9403ee93828cfb24c266c37f0c0d51149af63eb7e6fdb9f9d5fde37f09ed1",
     "mod/src/Powers/ZhanJueFreeAttackPower.cs": "3a7e9239982bb08834a6e7d9994af7083ce315981f3c8f380eb7b9fee564fb3e",
     "mod/src/Powers/ZhanJueLifestealPower.cs": "5cbf52424b2ceac8e26815091fe1f72c9c332f0b6c64cb7a493b35358b9d608b",
     "mod/src/Powers/ZhiJiPiercePower.cs": "f4dc0db85f8a8519f6aaf1a1d2ce6f62daa6609e6b55bb6ff1906e2fd9e7c1f6",
@@ -2043,7 +2043,7 @@
   },
   "additionalModel": "WeiDongZhuoZhangBaSheMaoOrb",
   "localizationCounts": {
-    "cards": 199,
+    "cards": 201,
     "orbs": 2
   },
   "buildPerformed": false

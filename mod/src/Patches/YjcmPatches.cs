@@ -106,8 +106,8 @@ public static class JinCuiBgmStopRoomChangePatch
 /// <summary>
 /// 转换技关键词自动消耗：拦截 GetResultPileTypeForCardPlay（0.107.1 返回 PileType），
 /// 如果卡牌包含转换技关键词，强制返回消耗堆。
-/// 注解挂载：由 Loader/游戏 PatchAll 自动应用（Loader 不调用真实 MainFile，
-/// 原 MainFile 手动挂载在 bundle 加载方式下不生效，导致转换技不自动消耗）。
+/// 注解挂载：Loader 选择版本程序集后调用真实 MainFile 的统一幂等入口，
+/// 由 MainFile 挂载补丁，避免 Loader 与内容程序集重复 PatchAll。
 /// </summary>
 #if GAME_BETA
 [HarmonyPatch(typeof(CardModel), "GetResultLocationForCardPlay")]

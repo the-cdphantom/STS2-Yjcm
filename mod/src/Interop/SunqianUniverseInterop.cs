@@ -10,7 +10,7 @@ using STS2RitsuLib.Interop;
 
 namespace Yjcm.Interop;
 
-// Verified against feature/cross-mod-interop commit 5c631501be161160b13c6c36fa9a26f381adcaaf.
+// Verified against SunqianUniversePublicApi source blob 69d6321b74fcdd43ebb8ef6952fd1e5d4d0aaa25.
 // Simple non-throwing stubs are required by RitsuLib's interop rewriting.
 [AssemblyInterop("Squ.Api.SunqianUniversePublicApi, sunqian-universe")]
 public static class SunqianUniverseInterop
@@ -22,6 +22,8 @@ public static class SunqianUniverseInterop
     public static IHoverTip CreateBurningHoverTip() => null!;
     public static Task<PowerModel?> ApplyBurning(PlayerChoiceContext choiceContext, Creature target,
         decimal amount, Creature? applier, CardModel? cardSource, bool silent = false) => Task.FromResult<PowerModel?>(null);
+    public static Task<bool> TriggerBurning(PlayerChoiceContext choiceContext, Creature target,
+        CardModel? cardSource = null) => Task.FromResult(false);
     public static bool IsScriptPower(PowerModel? power) => false;
     public static PowerModel? GetActiveScript(Creature? creature) => null;
     public static bool HasActiveScript(Creature? creature) => false;

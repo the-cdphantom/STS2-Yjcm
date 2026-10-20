@@ -10,10 +10,6 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\dependencies\stable-0.107.1\0Harmony.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="sts2">
       <HintPath>..\dependencies\stable-0.107.1\sts2.dll</HintPath>
       <Private>false</Private>

@@ -3,9 +3,11 @@
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 
 using STS2RitsuLib.Interop.AutoRegistration;
+using Yjcm.Interop;
 
 namespace Yjcm;
 
@@ -15,9 +17,10 @@ public sealed class WeiDongZhuoZhuQueYuShan : WeiDongZhuoCard
     public WeiDongZhuoZhuQueYuShan()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self) { }
 
-    // 为描述中的 [火攻] 提供悬浮提示
+    // 战斗中按持有者切换火攻/灼烧提示。※模组联动只作为额外悬停提示。
     protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
-        [HoverTipFactory.FromPower<HuoGongPower>()];
+        [..ZhuQueYuShanInterop.EffectHoverTips(this),
+         ..ZhuQueYuShanInterop.LibraryHoverTips()];
 
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(WeiDongZhuoZhuQueYuShan).Assembly.Location)!,
@@ -31,6 +34,11 @@ public sealed class WeiDongZhuoZhuQueYuShan : WeiDongZhuoCard
         if (owner == null) return;
         var orb = (EquipmentOrbModel)ModelDb.Orb<ZhuQueYuShanOrb>().ToMutable();
         await EquipCmd.ChannelEquipment(choiceContext, owner, orb);
+    }
+
+    protected override void AddExtraArgsToDescription(LocString description)
+    {
+        ZhuQueYuShanInterop.AddEffectText(description, this);
     }
 
     protected override void OnUpgrade()

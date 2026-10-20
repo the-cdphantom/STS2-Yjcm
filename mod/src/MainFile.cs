@@ -22,11 +22,29 @@ namespace Yjcm;
 public class MainFile
 {
     public const string ModId = "Yjcm";
+    private static readonly object InitializationGate = new();
+    private static bool _initializing;
+    private static bool _initialized;
 
     public static Logger Logger { get; } =
         new(ModId, LogType.Generic);
 
     public static void Initialize()
+    {
+        lock (InitializationGate)
+        {
+            if (_initialized || _initializing) return;
+            _initializing = true;
+            try
+            {
+                InitializeCore();
+                _initialized = true;
+            }
+            finally { _initializing = false; }
+        }
+    }
+
+    private static void InitializeCore()
     {
         ScriptManagerBridge.LookupScriptsInAssembly(Assembly.GetExecutingAssembly());
 
@@ -134,5 +152,4 @@ public class MainFile
         ]);
         Logger.Info("一将成名 Mod 加载成功，双向联动 API v1 已就绪。");
     }
-
 }

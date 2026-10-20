@@ -1,6 +1,7 @@
 {
   "source": "https://github.com/SSadamune/STS2-Sunqian-Universe",
   "commit": "5c631501",
+  "apiBlob": "69d6321b74fcdd43ebb8ef6952fd1e5d4d0aaa25",
   "type": "Squ.Api.SunqianUniversePublicApi, sunqian-universe",
   "isReady": true,
   "methods": {
@@ -10,6 +11,7 @@
     "IsBurningPower": "bool(PowerModel?power)",
     "CreateBurningHoverTip": "IHoverTip()",
     "ApplyBurning": "Task<PowerModel?>(PlayerChoiceContextchoiceContext,Creaturetarget,decimalamount,Creature?applier,CardModel?cardSource,boolsilent=false)",
+    "TriggerBurning": "Task<bool>(PlayerChoiceContextchoiceContext,Creaturetarget,CardModel?cardSource=null)",
     "IsScriptPower": "bool(PowerModel?power)",
     "GetActiveScript": "PowerModel?(Creature?creature)",
     "HasActiveScript": "bool(Creature?creature)",

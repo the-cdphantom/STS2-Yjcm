@@ -8,6 +8,25 @@ foreach($name in @('GodotSharp.dll','0Harmony.dll','sts2.dll','STS2-RitsuLib.dll
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $devRoot "artifacts\staged\Yjcm.$suffix.dll"))
 $modId=$assembly.GetType('Yjcm.MainFile',$true).GetField('ModId').GetRawConstantValue()
 if($modId -ne 'Yjcm' -or $assembly.GetName().Name -ne 'Yjcm') { throw "Wrong mod/assembly identity: $modId/$($assembly.GetName().Name)" }
+$loader=[Reflection.Assembly]::LoadFrom((Join-Path $devRoot 'artifacts\staged\Yjcm.dll'))
+if($loader.GetName().Name -ne 'Yjcm.Loader') { throw 'Wrong loader assembly identity' }
+if(@($loader.GetReferencedAssemblies()|Where-Object Name -eq '0Harmony').Count) { throw 'Loader must not patch content independently' }
+$loaderType=$loader.GetType('Yjcm.Loader.LoaderBootstrap',$true)
+if(!$loaderType.GetMethod('Initialize',[Reflection.BindingFlags]'Static,Public')) { throw 'Loader initializer missing' }
+$loaderSource=Get-Content -LiteralPath (Join-Path $devRoot 'loader\LoaderBootstrap.cs') -Raw
+if(!$loaderSource.Contains('InvokeRequiredBootstrap(real, "Yjcm.MainFile", "Initialize", "内容初始化")')) { throw 'Loader must invoke the unified content initializer' }
+foreach($duplicate in @('Yjcm.WuZhugeliangSettings','Yjcm.WuZhugeliangTelemetry','new Harmony(')) {
+    if($loaderSource.Contains($duplicate)) { throw "Loader retains duplicate initialization: $duplicate" }
+}
+$mainType=$assembly.GetType('Yjcm.MainFile',$true)
+$privateStatic=[Reflection.BindingFlags]'Static,NonPublic'
+if(!$mainType.GetMethod('InitializeCore',$privateStatic) -or !$mainType.GetField('_initialized',$privateStatic) -or !$mainType.GetField('_initializing',$privateStatic)) {
+    throw 'Content initializer is not guarded by the expected idempotent state'
+}
+$mainSource=Get-Content -LiteralPath (Join-Path $devRoot 'mod\src\MainFile.cs') -Raw
+if(!$mainSource.Contains('Api.PublicApi.Initialize([') -or !$mainSource.Contains('一将成名 Mod 加载成功，双向联动 API v1 已就绪。')) {
+    throw 'Unified content initializer does not publish API readiness'
+}
 $types=$assembly.GetTypes()
 $featureTypes=@($types | Where-Object { $_.FullName.StartsWith('Yjcm.WeiDongZhuo') })
 if($Mode -eq 'fix' -and $featureTypes.Count -ne 0) { throw 'Production contains WeiDongZhuo types' }
