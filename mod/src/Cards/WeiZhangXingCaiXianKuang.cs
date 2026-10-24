@@ -22,6 +22,9 @@ public sealed class WeiZhangXingCaiXianKuang : WuZhugeliangCard
     public WeiZhangXingCaiXianKuang()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self) { }
 
+    public override IEnumerable<CardTag> Tags =>
+        SunqianMechanicBoundTag.With(base.Tags);
+
     // 武将+蜀 tag：纳入武将牌相关机制（天任、尽瘁等）
     protected override HashSet<CardTag> CanonicalTags =>
         [YjcmCardTags.WuJiang, YjcmCardTags.Shu];

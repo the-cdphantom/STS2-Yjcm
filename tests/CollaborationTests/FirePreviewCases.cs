@@ -8,8 +8,6 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
-using STS2RitsuLib.CardTags;
-using STS2RitsuLib.Content;
 
 // Exercise actual variables/tags; replace only global hooks and the optional partner boundary.
 internal static class FirePreviewCases
@@ -41,10 +39,7 @@ internal static class FirePreviewCases
             Patch(api.GetProperty("IsReady")!.GetMethod!, nameof(Ready));
             Patch(api.GetMethod("IsSupportingActorCharacter")!, nameof(Actor));
             Patch(interop.GetMethod("CanonicalBurningPower", Flags)!, nameof(Burning));
-            Patch(interop.GetProperty("BurningTag", Flags)!.GetMethod!, nameof(Tag));
-            // GetQualifiedCardTagId is the same public, deterministic convention used by SquCardTags.
-            check(ModContentRegistry.GetQualifiedCardTagId("sunqian-universe", "burning") ==
-                "SUNQIAN_UNIVERSE_CARDTAG_BURNING", "Foreign burning tag ID mismatch");
+            Patch(api.GetProperty("BurningCardTag")!.GetMethod!, nameof(Tag));
             _burningTag = (CardTag)0x456789;
 
             var player = (Player)RuntimeHelpers.GetUninitializedObject(typeof(Player));

@@ -22,6 +22,9 @@ public sealed class LiuBeiJiJiang : WuZhugeliangCard
     public override HashSet<CardKeyword> CanonicalKeywords =>
         [CardKeyword.Exhaust];
 
+    public override IEnumerable<CardTag> Tags =>
+        SunqianMechanicBoundTag.With(base.Tags);
+
     protected override HashSet<CardTag> CanonicalTags => [YjcmCardTags.WuJiang, YjcmCardTags.Shu];
 
     private static readonly string VoicePath = Path.Combine(

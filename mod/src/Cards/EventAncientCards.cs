@@ -181,6 +181,7 @@ public sealed class MouZhugeliangKongCheng : WuZhugeliangCard
     public MouZhugeliangKongCheng() : base(3, CardType.Power, CardRarity.Ancient, TargetType.Self) { }
     public override bool CanBeGeneratedInCombat => false;
     public override string CustomPortraitPath => "mou_zhugeliang_kong_cheng.png".CardImagePath();
+    public override IEnumerable<CardTag> Tags => SunqianMechanicBoundTag.With(base.Tags);
     protected override HashSet<CardTag> CanonicalTags => [YjcmCardTags.WuJiang, YjcmCardTags.Shu];
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => [HoverTipFactory.FromPower<XingPower>()];
 

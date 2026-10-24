@@ -19,6 +19,9 @@ public sealed class ShenJiangWeiTianRen : WuZhugeliangCard
     public override HashSet<CardKeyword> CanonicalKeywords =>
         [];
 
+    public override IEnumerable<CardTag> Tags =>
+        SunqianMechanicBoundTag.With(base.Tags);
+
     protected override HashSet<CardTag> CanonicalTags =>
         [YjcmCardTags.WuJiang, YjcmCardTags.ShenJiang];
 

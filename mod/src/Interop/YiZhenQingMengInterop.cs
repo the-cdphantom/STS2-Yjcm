@@ -6,9 +6,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
-using STS2RitsuLib.CardTags;
-using STS2RitsuLib.Content;
-
 #nullable enable
 
 namespace Yjcm.Interop;
@@ -28,8 +25,7 @@ internal static class YiZhenQingMengInterop
     public static bool Affects(Player? player) =>
         IsModReady && SunqianUniverseInterop.IsSupportingActorCharacter(player?.Character);
 
-    internal static CardTag BurningTag => ModContentRegistry
-        .GetQualifiedCardTagId("sunqian-universe", "burning").GetModCardTag();
+    internal static CardTag BurningTag => SunqianUniverseInterop.BurningCardTag;
 
     public static IEnumerable<CardTag> WithBurningTag(CardModel card, IEnumerable<CardTag> original)
     {

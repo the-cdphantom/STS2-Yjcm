@@ -1,3 +1,4 @@
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Characters;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -10,12 +11,14 @@ using STS2RitsuLib.Interop;
 
 namespace Yjcm.Interop;
 
-// Verified against main c37f924c, API blob 85e618a632c7f2e58660fe1a9ca471fcdc073ce9.
+// Verified against main 38ca437e, API blob a0e0886b7195bc71a93aa3dcf354d377651cf98d.
 // Simple non-throwing stubs are required by RitsuLib's interop rewriting.
 [AssemblyInterop("Squ.Api.SunqianUniversePublicApi, sunqian-universe")]
 public static class SunqianUniverseInterop
 {
     public static bool IsReady => false;
+    public static CardTag CharacterMechanicBoundCardTag => default;
+    public static CardTag BurningCardTag => default;
     public static bool IsSupportingActorCharacter(CharacterModel? character) => false;
     public static bool HasSupportingActorInCombat() => false;
     public static bool IsBurningPower(PowerModel? power) => false;

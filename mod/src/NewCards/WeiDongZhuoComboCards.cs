@@ -215,6 +215,7 @@ public sealed class WeiDongZhuoHaoShou : WeiDongZhuoCard
     public WeiDongZhuoHaoShou() : base(1, CardType.Skill, CardRarity.Basic, TargetType.Self) { }
     public override string CustomPortraitPath => "res://WeiDongZhuo/images/hao_shou.png";
     public override HashSet<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
+    public override IEnumerable<CardTag> Tags => SunqianMechanicBoundTag.With(base.Tags);
     protected override HashSet<CardTag> CanonicalTags => [YjcmCardTags.WuJiang, YjcmCardTags.Qun];
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(WeiDongZhuoHaoShou).Assembly.Location)!,

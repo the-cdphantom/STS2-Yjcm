@@ -1,9 +1,13 @@
 {
   "source": "https://github.com/SSadamune/STS2-Sunqian-Universe",
-  "commit": "c37f924c",
-  "apiBlob": "85e618a632c7f2e58660fe1a9ca471fcdc073ce9",
+  "commit": "38ca437e",
+  "apiBlob": "a0e0886b7195bc71a93aa3dcf354d377651cf98d",
   "type": "Squ.Api.SunqianUniversePublicApi, sunqian-universe",
   "isReady": true,
+  "properties": {
+    "CharacterMechanicBoundCardTag": "CardTag",
+    "BurningCardTag": "CardTag"
+  },
   "methods": {
     "IsCharacterMechanicBound": "bool(CardModel?card)",
     "IsSupportingActorCharacter": "bool(CharacterModel?character)",
