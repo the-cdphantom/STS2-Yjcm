@@ -4,7 +4,7 @@ static func create_sprite(host: Node, folder: String, file_name: String, animati
 	if not ClassDB.class_exists("SpineSprite"):
 		push_error("WeiDongZhuo: Spine runtime is unavailable")
 		return null
-	var asset_root = str(host.get_tree().root.get_meta("weidongzhuo_asset_root", ""))
+	var asset_root = str(skin_meta(host, "weidongzhuo_asset_root", ""))
 	if asset_root.is_empty():
 		push_error("WeiDongZhuo: asset root was not configured")
 		return null
@@ -28,3 +28,11 @@ static func create_sprite(host: Node, folder: String, file_name: String, animati
 		return null
 	state.call("set_animation", animation, true, 0)
 	return sprite
+
+static func skin_meta(host: Node, key: String, fallback: Variant) -> Variant:
+	var current = host
+	while current != null:
+		if current.has_meta(key):
+			return current.get_meta(key)
+		current = current.get_parent()
+	return fallback

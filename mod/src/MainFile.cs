@@ -60,6 +60,8 @@ public class MainFile
         try { WuZhugeliangSettings.Register(); }
         catch (Exception ex) { Logger.Warn($"设置页注册失败（继续）: {ex.Message}"); }
 
+        PlayerSkins.Register();
+
         // 注册遥测申请方；后端未配置时保持完全禁用
         try { WuZhugeliangTelemetry.Register(); }
         catch (Exception ex) { Logger.Warn($"遥测注册失败（继续）: {ex.Message}"); }

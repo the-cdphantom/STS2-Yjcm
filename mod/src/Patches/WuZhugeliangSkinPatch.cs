@@ -222,6 +222,7 @@ internal static class WuZhugeliangSkinSelectPatch
             WuZhugeliangSettings.SetWuZhugeliangSkin(useMouSkin);
             UpdateSelectorText(panel);
             ReplacePreview(screen, useMouSkin);
+            PlayerSkins.PublishLocalChange();
             WuZhugeliang.PlayCurrentSkinSelectVoice();
             MainFile.Logger.Info($"武诸葛亮人物选择皮肤已切换为：{(useMouSkin ? "谋诸葛亮" : "武诸葛亮")}");
         }

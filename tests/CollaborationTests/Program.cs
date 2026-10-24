@@ -85,4 +85,5 @@ foreach (var (unblocked, blocked, overkill, expected) in new[] {
 await SunqianCases.Run(assembly, Path.GetDirectoryName(Path.GetFullPath(args[0]))!, Check);
 FirePreviewCases.Run(assembly, Check);
 await LampEnergyCases.Run(Check);
+PlayerSkinCases.Run(assembly, Check);
 Console.WriteLine($"COLLABORATION_HARMONY_OK runtime={Environment.Version} assertions={checks}");

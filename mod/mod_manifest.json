@@ -3,7 +3,7 @@
   "name": "三国杀：一将成名mod",
   "author": "CDphantom（b站CD幻影）",
   "description": "三国杀：一将成名mod，现已完成武诸葛亮与威董卓两名角色。作者CDphantom（B站：CD幻影），部分内容采用ai生成，Mod交流群：1106930563。",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "min_game_version": "0.107.1",
   "has_pck": true,
   "has_dll": true,

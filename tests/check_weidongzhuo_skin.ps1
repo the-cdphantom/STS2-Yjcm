@@ -56,4 +56,23 @@ Require ($selectSource.Contains('泰山崩石') -and $selectSource.Contains('pan
 $settingsSource=Get-Content -LiteralPath (Join-Path $repo 'mod/src/Settings/WuZhugeliangSettings.cs') -Raw
 Require ($settingsSource.Contains('settings.WeiDongZhuoSkin') -and $settingsSource.Contains('WeiDongZhuoSkinBinding.Save()')) 'Selection must persist through the shared settings store'
 Require ($null -eq $assembly.GetType('Yjcm.CharacterAttackAnimationPatch')) 'Withdrawn attack animation must not return'
+$playerSkinSource=Get-Content -LiteralPath (Join-Path $repo 'mod/src/Characters/PlayerSkinSelection.cs') -Raw
+foreach($required in @('RegisterPerPlayer<PlayerSkinSelection>','RunSavedDataLobbyStagingEvent','RunSavedDataPreparingEvent','Priority.First','LocalContext.IsMe(player)','Selections.TryGet(run, player.NetId','RunSavedDataWritePolicy.AlwaysWhenRegistered')) {
+    Require ($playerSkinSource.Contains($required)) "Player skin sync/lifecycle missing: $required"
+}
+$nativeTargets=@(
+    @([MegaCrit.Sts2.Core.Entities.Creatures.Creature],'CreateVisuals'),
+    @([MegaCrit.Sts2.Core.Multiplayer.Game.Lobby.StartRunLobby],'SetReady'),
+    @([MegaCrit.Sts2.Core.Multiplayer.Game.Lobby.StartRunLobby],'CleanUp'),
+    @([MegaCrit.Sts2.Core.Nodes.Rooms.NMerchantRoom],'AfterRoomIsLoaded')
+)
+foreach($target in $nativeTargets) {
+    Require ($null -ne $target[0].GetMethod($target[1],$flags)) "Native skin target missing: $($target[1])"
+}
+$merchantPlayers=[MegaCrit.Sts2.Core.Nodes.Rooms.NMerchantRoom].GetField('_players',$flags)
+Require ($merchantPlayers.FieldType -eq [Collections.Generic.List[MegaCrit.Sts2.Core.Entities.Players.Player]]) 'Merchant owner order field changed'
+$visualSource=Get-Content -LiteralPath (Join-Path $repo 'mod/src/Patches/WuZhugeliangMeshVisualsPatch.cs') -Raw
+Require ($visualSource.Contains('GetMeta(PlayerSkins.MouSkinMeta') -and !$visualSource.Contains('WuZhugeliangSettings.UseMouZhugeliangSkin')) 'Combat must read owner metadata, never the observer preference'
+$runtimeSource=Get-Content -LiteralPath (Join-Path $repo 'mod/WeiDongZhuo/scripts/spine_runtime.gd') -Raw
+Require ($runtimeSource.Contains('skin_meta(host,') -and !$runtimeSource.Contains('host.get_tree().root.get_meta')) 'Dong Zhuo runtime must prefer node-local skin data'
 Write-Output "WEIDONGZHUO_SKIN_OK variant=$Variant assertions=$script:checks"

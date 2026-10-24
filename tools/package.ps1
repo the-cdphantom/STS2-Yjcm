@@ -41,6 +41,8 @@ Assert-YjcmNativeExit 'PCK audit failed'
 Assert-YjcmNativeExit 'Packaged Dong Zhuo portrait regression failed'
 & $GodotPath --headless --path (Join-Path $repo 'mod') --log-file (Join-Path $repo 'artifacts/logs/taishan-layout-pack-test.log') --script (Join-Path $repo 'tests/check_weidongzhuo_skin_layout.gd') -- "--pack=$(Join-Path $dist 'Yjcm.pck')" | Out-Host
 Assert-YjcmNativeExit 'Packaged TaiShan select layout regression failed'
+& $GodotPath --headless --path (Join-Path $repo 'mod') --log-file (Join-Path $repo 'artifacts/logs/player-skin-pack-test.log') --script (Join-Path $repo 'tests/check_player_skin_metadata.gd') -- "--pack=$(Join-Path $dist 'Yjcm.pck')" | Out-Host
+Assert-YjcmNativeExit 'Packaged per-player skin metadata regression failed'
 & pwsh -NoProfile -File (Join-Path $repo 'tests/check_delivery.ps1')
 Assert-YjcmNativeExit 'Package delivery audit failed'
 Write-Output "PACKAGE_OK destination=$dist"

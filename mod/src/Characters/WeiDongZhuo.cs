@@ -83,6 +83,15 @@ public sealed class WeiDongZhuo : ModCharacterTemplate<WeiDongZhuoCardPool, Iron
     internal static string SkinAssetFolder(bool useTaiShan) =>
         useTaiShan ? "WeiDongZhuoTaiShan" : "WeiDongZhuo";
 
+    internal static void ConfigureVisualSkin(Node visuals, bool useTaiShan)
+    {
+        string spineRoot = Path.Combine(Path.GetDirectoryName(typeof(WeiDongZhuo).Assembly.Location)!, "Spine");
+        if (useTaiShan && !File.Exists(Path.Combine(spineRoot, SkinAssetFolder(true), "Combat", "character.skel")))
+            useTaiShan = false;
+        visuals.SetMeta("weidongzhuo_asset_root", Path.Combine(spineRoot, SkinAssetFolder(useTaiShan)));
+        visuals.SetMeta("weidongzhuo_taishan_skin", useTaiShan);
+    }
+
     private static bool SetAssetRoot()
     {
         bool useTaiShan = WuZhugeliangSettings.UseTaiShanBengShiSkin;

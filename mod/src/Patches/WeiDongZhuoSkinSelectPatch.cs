@@ -67,6 +67,7 @@ internal static class WeiDongZhuoSkinSelectPatch
             bool oldValue = WuZhugeliangSettings.UseTaiShanBengShiSkin;
             WuZhugeliangSettings.SetWeiDongZhuoSkin(!oldValue);
             if (!ReplacePreview(screen)) WuZhugeliangSettings.SetWeiDongZhuoSkin(oldValue);
+            PlayerSkins.PublishLocalChange();
             UpdateText(panel);
         }
         previous.Pressed += Toggle; next.Pressed += Toggle;

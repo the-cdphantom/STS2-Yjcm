@@ -25,7 +25,7 @@ internal static class WuZhugeliangMeshVisualsPatch
 
         try
         {
-            if (WuZhugeliangSettings.UseMouZhugeliangSkin)
+            if (__instance.GetMeta(PlayerSkins.MouSkinMeta, false).AsBool())
             {
                 host.AddChild(WuZhugeliangSkinVisuals.CreateCombatCharacter());
                 MainFile.Logger.Info("谋诸葛亮纯人物 Spine 战斗立绘已启用（已剔除火焰、气浪和背景部件）。");
