@@ -1,6 +1,8 @@
 using System.Reflection;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.addons.mega_text;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
@@ -8,7 +10,11 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
 namespace Yjcm;
 
-[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter))]
+#if GAME_V0113
+[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter), [typeof(NCharacterSelectButton)])]
+#else
+[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter), [typeof(NCharacterSelectButton), typeof(CharacterModel)])]
+#endif
 internal static class WeiDongZhuoSkinSelectPatch
 {
     private const string SelectorName = "WeiDongZhuoSkinSelector";
@@ -17,8 +23,15 @@ internal static class WeiDongZhuoSkinSelectPatch
 
     internal static bool IsWeiDongZhuo(Type? type) => type == typeof(WeiDongZhuo);
 
-    private static void Postfix(NCharacterSelectScreen __instance, CharacterModel characterModel)
+#if GAME_V0113
+    private static void Postfix(NCharacterSelectScreen __instance, NCharacterSelectButton __0)
     {
+        CharacterModel? characterModel = __0.IsRandom || __0.IsLocked ? null : __0.Character;
+#else
+    private static void Postfix(NCharacterSelectScreen __instance, CharacterModel __1)
+    {
+        CharacterModel? characterModel = __1;
+#endif
         PanelContainer? panel = __instance.GetNodeOrNull<PanelContainer>(SelectorName);
         if (!IsWeiDongZhuo(characterModel?.GetType()))
         {
@@ -28,6 +41,8 @@ internal static class WeiDongZhuoSkinSelectPatch
         panel ??= CreateSelector(__instance);
         panel.Visible = true;
         UpdateText(panel);
+        SkinSelectDescription.Refresh(__instance, characterModel!, WuZhugeliangSettings.UseTaiShanBengShiSkin,
+            "YJCM_CHARACTER_WEI_DONG_ZHUO.taishan_description");
     }
 
     private static void UpdateText(PanelContainer panel) =>
@@ -67,6 +82,8 @@ internal static class WeiDongZhuoSkinSelectPatch
             bool oldValue = WuZhugeliangSettings.UseTaiShanBengShiSkin;
             WuZhugeliangSettings.SetWeiDongZhuoSkin(!oldValue);
             if (!ReplacePreview(screen)) WuZhugeliangSettings.SetWeiDongZhuoSkin(oldValue);
+            SkinSelectDescription.Refresh(screen, ModelDb.Character<WeiDongZhuo>(),
+                WuZhugeliangSettings.UseTaiShanBengShiSkin, "YJCM_CHARACTER_WEI_DONG_ZHUO.taishan_description");
             PlayerSkins.PublishLocalChange();
             UpdateText(panel);
         }
@@ -104,5 +121,14 @@ internal static class WeiDongZhuoSkinSelectPatch
             MainFile.Logger.Error($"威董卓皮肤预览切换失败：{error.Message}");
             return false;
         }
+    }
+}
+
+internal static class SkinSelectDescription
+{
+    internal static void Refresh(NCharacterSelectScreen screen, CharacterModel character, bool useSkin, string skinKey)
+    {
+        if (screen.GetNodeOrNull<MegaRichTextLabel>("InfoPanel/VBoxContainer/DescriptionLabel") is { } label)
+            label.Text = new LocString("characters", useSkin ? skinKey : character.CharacterSelectDesc).GetFormattedText();
     }
 }

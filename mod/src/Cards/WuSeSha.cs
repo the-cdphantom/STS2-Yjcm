@@ -22,7 +22,6 @@ public sealed class WuSeSha : CardModel
 {
     private const string DmgKey = "Dmg";
 
-    
     public override string PortraitPath => "wu_se_sha.png".CardImagePath();
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(DmgKey, 9m, ValueProp.Move)];
@@ -31,6 +30,7 @@ public sealed class WuSeSha : CardModel
 
     public WuSeSha()
         : base(0, CardType.Attack, CardRarity.Token, TargetType.AllEnemies, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {

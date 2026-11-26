@@ -130,10 +130,42 @@ public abstract class WeiDongZhuoGuangYongBase : ModRelicTemplate
         if (source == null) return false;
         int bit = CapBit(source.GetType());
         var own = self.GetPower(source.Id);
-        int ownAmount = own?.Amount ?? 0;
-        var transfer = WeiDongZhuoGuangYongRules.Calculate(source.Amount, ownAmount, Upgraded, bit != 0, (_seenCaps & bit) != 0);
+        var transfer = WeiDongZhuoGuangYongRules.Calculate(source.Amount, own?.Amount ?? 0, Upgraded, bit != 0, (_seenCaps & bit) != 0);
         if (!transfer.Success) return false;
         Flash();
+        if (!await TransferBuff(context, source, card, transfer)) return false;
+        if (bit != 0) _seenCaps |= bit;
+        // Check wounded status anew for EACH enemy. Reaching full HP stops the cost.
+        if (WeiDongZhuoGuangYongRules.PayMaxHp(self.CurrentHp, self.MaxHp, true))
+            await YjcmCreatureCompat.LoseMaxHp(context, self, 1, null);
+        var node = NCombatRoom.Instance?.GetCreatureNode(enemy);
+        if (node != null && enemy.IsAlive) await node.UpdateIntent(enemy.CombatState!.Allies);
+        return true;
+    }
+
+    internal static bool CanStealOne(PowerModel source, Creature recipient) =>
+        source.Owner.IsAlive && recipient.CanReceivePowers && source.Amount > 0 &&
+        Priority.Contains(source.GetType()) &&
+        ((source.StackType != PowerStackType.None && CapBit(source.GetType()) == 0) || recipient.GetPower(source.Id) == null);
+
+    internal static async Task<bool> StealOne(PlayerChoiceContext context, PowerModel source, CardModel card)
+    {
+        var recipient = card.Owner.Creature;
+        if (!CanStealOne(source, recipient)) return false;
+        int amount = (recipient.GetPower(source.Id)?.Amount ?? 0) + 1;
+        if (!await TransferBuff(context, source, card, new(source.Amount - 1, amount, true))) return false;
+        var enemy = source.Owner;
+        var node = NCombatRoom.Instance?.GetCreatureNode(enemy);
+        if (node != null && enemy.IsAlive) await node.UpdateIntent(enemy.CombatState!.Allies);
+        return true;
+    }
+
+    private static async Task<bool> TransferBuff(PlayerChoiceContext context, PowerModel source, CardModel card,
+        WeiDongZhuoGuangYongRules.Transfer transfer)
+    {
+        var self = card.Owner.Creature;
+        var enemy = source.Owner;
+        var own = self.GetPower(source.Id);
         if (source is HardenedShellPower)
         {
             WeiDongZhuoShellSafety.Mark(enemy);
@@ -150,7 +182,7 @@ public abstract class WeiDongZhuoGuangYongBase : ModRelicTemplate
         }
         if (own == null || own.Amount <= 0)
         {
-            MainFile.Logger.Warn($"GUANGYONG_TRANSFER_ABORTED power={source.Id}");
+            MainFile.Logger.Warn($"BUFF_TRANSFER_ABORTED power={source.Id}");
             return false;
         }
         // Damage-cap upgrades must set 1, never add 1 to an existing cap.
@@ -158,25 +190,19 @@ public abstract class WeiDongZhuoGuangYongBase : ModRelicTemplate
             await SetExisting(context, own, transfer.Player, card);
         if (own.Amount != transfer.Player)
         {
-            MainFile.Logger.Warn($"GUANGYONG_TRANSFER_ABORTED amount power={source.Id} expected={transfer.Player} actual={own.Amount}");
+            MainFile.Logger.Warn($"BUFF_TRANSFER_ABORTED amount power={source.Id} expected={transfer.Player} actual={own.Amount}");
             return false;
         }
         // Change the aggregate stat exactly once. Temporary wrappers are bookkeeping,
         // not extra steal candidates, and their removal must not subtract it again.
         await ReduceTemporaryExpiry(enemy, source, source.Amount - transfer.Enemy);
         await SetExisting(context, source, transfer.Enemy, card);
-        if (bit != 0) _seenCaps |= bit;
         if (source is HardenedShellPower)
         {
             WeiDongZhuoShellSafety.Mark(enemy);
             WeiDongZhuoShellSafety.Mark(self);
             if (transfer.Enemy == 0) enemy.HpDisplay = HpDisplay.Normal;
         }
-        // Check wounded status anew for EACH enemy. Reaching full HP stops the cost.
-        if (WeiDongZhuoGuangYongRules.PayMaxHp(self.CurrentHp, self.MaxHp, true))
-            await CreatureCmd.LoseMaxHp(context, self, 1, false);
-        var node = NCombatRoom.Instance?.GetCreatureNode(enemy);
-        if (node != null && enemy.IsAlive) await node.UpdateIntent(enemy.CombatState!.Allies);
         return true;
     }
 

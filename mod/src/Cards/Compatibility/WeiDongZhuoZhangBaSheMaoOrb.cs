@@ -78,7 +78,7 @@ public sealed class WeiDongZhuoZhangBaSheMaoOrb : EquipmentOrbModel
             // 选中卡容器并把卡移回手牌，不依赖 source.ExecutionFinished 延迟触发
             //（若传 this，ExecutionFinished 由 RitsuLib 包装延迟触发，选中卡会
             //  残留在容器上，点击即抛 "Only valid when in Select Mode" 并显卡住）。
-            var selected = await CardSelectCmd.FromHand(
+            var selected = await CardSelectCmd.FromHandForDiscard(
                 choiceContext, Owner,
                 new CardSelectorPrefs(SelectDiscardPrompt, 0, 2),
                 null, null);

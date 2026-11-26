@@ -2,9 +2,9 @@ param([ValidateSet('fix','test')][string]$Mode, [ValidateSet('stable','beta')][s
 $ErrorActionPreference='Stop'
 $devRoot=Split-Path $PSScriptRoot -Parent
 $workspace=$devRoot
-$suffix=if($Variant -eq 'stable') { '0.107.1' } else { '0.111.0' }
+$suffix=if($Variant -eq 'stable') { '0.111.0' } else { '0.114.0' }
 $bin=Join-Path $workspace "dependencies\$Variant-$suffix"
-foreach($name in @('GodotSharp.dll','0Harmony.dll','sts2.dll','STS2-RitsuLib.dll')) { [void][Reflection.Assembly]::LoadFrom((Join-Path $bin $name)) }
+foreach($name in @('GodotSharp.dll','0Harmony.dll','sts2.dll','STS2-RitsuLib.dll','STS2-RitsuLib.Shared.dll','STS2-RitsuLib.Ui.dll','STS2-RitsuLib.Settings.dll','STS2-RitsuLib.Runtime.dll')) { [void][Reflection.Assembly]::LoadFrom((Join-Path $bin $name)) }
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $devRoot "artifacts\staged\Yjcm.$suffix.dll"))
 $modId=$assembly.GetType('Yjcm.MainFile',$true).GetField('ModId').GetRawConstantValue()
 if($modId -ne 'Yjcm' -or $assembly.GetName().Name -ne 'Yjcm') { throw "Wrong mod/assembly identity: $modId/$($assembly.GetName().Name)" }
@@ -15,6 +15,24 @@ $loaderType=$loader.GetType('Yjcm.Loader.LoaderBootstrap',$true)
 if(!$loaderType.GetMethod('Initialize',[Reflection.BindingFlags]'Static,Public')) { throw 'Loader initializer missing' }
 $loaderSource=Get-Content -LiteralPath (Join-Path $devRoot 'loader\LoaderBootstrap.cs') -Raw
 if(!$loaderSource.Contains('InvokeRequiredBootstrap(real, "Yjcm.MainFile", "Initialize", "内容初始化")')) { throw 'Loader must invoke the unified content initializer' }
+if(!$loaderSource.Contains('item.Version.Minor == host.Minor') -or !$loaderSource.Contains('item.Version! > host')) { throw 'Loader must prefer exact minor and then the next newer variant' }
+$pick=$loaderType.GetMethod('PickRealDll',[Reflection.BindingFlags]'Static,NonPublic')
+$tmp=Join-Path ([IO.Path]::GetTempPath()) ('yjcm-loader-' + [Guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $tmp -Force | Out-Null
+try {
+    New-Item -ItemType File -Path (Join-Path $tmp 'Yjcm.0.111.0.dll') -Force | Out-Null
+    New-Item -ItemType File -Path (Join-Path $tmp 'Yjcm.0.114.0.dll') -Force | Out-Null
+    foreach($case in @(
+        @('0.111.0','Yjcm.0.111.0.dll'),
+        @('0.114.0','Yjcm.0.114.0.dll'),
+        @('0.113.0','Yjcm.0.114.0.dll')
+    )){
+        $picked=Split-Path -Leaf ([string]$pick.Invoke($null,[object[]]@($tmp.ToString(),[version]$case[0])))
+        if($picked -ne $case[1]){throw "Loader version selection failed: host=$($case[0]) picked=$picked expected=$($case[1])"}
+    }
+} finally {
+    if(Test-Path -LiteralPath $tmp){Remove-Item -LiteralPath $tmp -Recurse -Force}
+}
 foreach($duplicate in @('Yjcm.WuZhugeliangSettings','Yjcm.WuZhugeliangTelemetry','new Harmony(')) {
     if($loaderSource.Contains($duplicate)) { throw "Loader retains duplicate initialization: $duplicate" }
 }
@@ -42,12 +60,12 @@ if($Mode -eq 'test') {
         if(!$assembly.GetType("Yjcm.$name")) { throw "Test relic missing: $name" }
     }
     $cards=@($featureTypes | Where-Object { !$_.IsAbstract -and $_.IsSubclassOf([MegaCrit.Sts2.Core.Models.CardModel]) })
-    if($cards.Count -ne 90) { throw "Wrong independent card count $($cards.Count)" }
+    if($cards.Count -ne 92) { throw "Wrong independent card count $($cards.Count)" }
     $ids=@($cards | ForEach-Object {
         $attr=$_.GetCustomAttributesData() | Where-Object {$_.AttributeType.Name -eq 'RegisterCardAttribute'}
         ($attr.NamedArguments | Where-Object MemberName -eq 'FullPublicEntry').TypedValue.Value
     })
-    if(@($ids | Sort-Object -Unique).Count -ne 90 -or @($ids | Where-Object {$_ -notmatch '^YJCM_CARD_'}).Count -gt 0) { throw 'Card IDs not unique or outside the mod namespace' }
+    if(@($ids | Sort-Object -Unique).Count -ne 92 -or @($ids | Where-Object {$_ -notmatch '^YJCM_CARD_'}).Count -gt 0) { throw 'Card IDs not unique or outside the mod namespace' }
     foreach($name in @(
         'WeiDongZhuoJuChui','WeiDongZhuoJieJuChui','WeiDongZhuoHaoShou',
         'WeiDongZhuoYuanYinMoShou','WeiDongZhuoWeiLvBuBaGuan','WeiDongZhuoWeiMaChaoJiZhan',
@@ -65,7 +83,7 @@ if($Mode -eq 'test') {
         'WeiDongZhuoBaoNueXingTai',
         'WeiDongZhuoWuHuangFuSongLianJie','WeiDongZhuoWuHuangFuSongJiangXian',
         'WeiDongZhuoShenZhaoYunLongHun',
-        'WeiDongZhuoDongZhuoHuoShaoLuoYang'
+        'WeiDongZhuoDongZhuoHuoShaoLuoYang','WeiDongZhuoZhuGeJingZuYin','WeiDongZhuoQinYiLuPiaoPing'
     )) {
         if(!$assembly.GetType("Yjcm.$name")) { throw "New card missing: $name" }
     }

@@ -25,7 +25,7 @@ public sealed class MouPangTongYinMouYang : WuZhugeliangCard
         [YjcmCardTags.WuJiang, YjcmCardTags.Shu];
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
-        [new DynamicVar(EnergyKey, 2m)];
+        [new EnergyVar(EnergyKey, 2)];
 
     // 寅谋阳与宏策共用用户指定的宏策卡面。
     public override string CustomPortraitPath => "hong_ce.png".CardImagePath();

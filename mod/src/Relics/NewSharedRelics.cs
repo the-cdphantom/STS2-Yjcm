@@ -259,10 +259,14 @@ public sealed class ZhangLuBuDaoFan : YjcmSharedRelic
 #else
         Creature? dealer, CardModel? cardSource)
 #endif
+        => GetShaBonus(IsMutable ? Owner : null, props, dealer, cardSource);
+
+    internal static decimal GetShaBonus(Player? owner, ValueProp props, Creature? dealer, CardModel? cardSource)
     {
-        if (cardSource is not Sha || !IsOwnersPoweredAttack(props, dealer, cardSource))
+        if (owner == null || cardSource is not (Sha or WeiDongZhuoSha or WeiCaoCaoSha)
+            || !props.IsPoweredAttack() || (dealer != owner.Creature && cardSource.Owner != owner))
             return 0m;
-        return Owner.Deck.Cards.Count(card => card.Tags.Contains(YjcmCardTags.WuJiang));
+        return owner.Deck.Cards.Count(card => card.Tags.Contains(YjcmCardTags.WuJiang));
     }
 }
 

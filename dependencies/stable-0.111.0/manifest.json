@@ -1,0 +1,101 @@
+{
+    "files":  [
+                  {
+                      "sha256":  "EF1898322C9F5C86DC1B0758B272A9C440823B4A41CA9A0B82A3AA6B3D206387",
+                      "name":  "0Harmony.dll"
+                  },
+                  {
+                      "sha256":  "0E4897ECDFB31456A97C7D8028DFB8D7DBDC632E2F73FC9B438D7B266A139289",
+                      "name":  "GodotSharp.dll"
+                  },
+                  {
+                      "sha256":  "74F244B13E9C6849149BEC3B37E1729777A7F21306C56383405C2949EEA62E22",
+                      "name":  "release_info.json"
+                  },
+                  {
+                      "sha256":  "4F1619B048D0B0F604265075BC5311F9F2E4A0ECDC09662009B7EE11D50C216C",
+                      "name":  "Sentry.dll"
+                  },
+                  {
+                      "sha256":  "BEF522B322662F6DBF280891E23E2001483107F8BB981F1692C264928753112A",
+                      "name":  "Sentry.Godot.dll"
+                  },
+                  {
+                      "sha256":  "2AE45D066122434831F52E29240C5CAB237D83134A0AB498AD8DCB937449A3E0",
+                      "name":  "Sentry.Godot.xml"
+                  },
+                  {
+                      "sha256":  "2686187B458ABA592E845D8C47F28C730EFCCA23EAE77E3950A5178A9846D9BA",
+                      "name":  "SharpGen.Runtime.COM.dll"
+                  },
+                  {
+                      "sha256":  "0E6ACD59AB2173A6467626D69CF9F5B5B7651111FFEE6E30FB7818DE59335B4B",
+                      "name":  "SharpGen.Runtime.dll"
+                  },
+                  {
+                      "sha256":  "6220CDE1DAFFFDE5C51A4E23DB4BB16E8EC620EF52BAC51C0AD5F48C4769F168",
+                      "name":  "SmartFormat.dll"
+                  },
+                  {
+                      "sha256":  "723E9FFDB9CEC9565D9BBBDB27B4D19A9B0BA4FF006E1AB8B94022AE5C426450",
+                      "name":  "SmartFormat.ZString.dll"
+                  },
+                  {
+                      "sha256":  "E1CD0BF2436CEFBB8BFCFCC1CEA0587E5B9C740769E8340F7B9E9DE72785FCF0",
+                      "name":  "Steamworks.NET.dll"
+                  },
+                  {
+                      "sha256":  "0861BFA1DF347538D932F22D580E75420F08082792EB914E53B4882764ACDBE9",
+                      "name":  "sts2.dll"
+                  },
+                  {
+                      "sha256":  "A88331870D38CDB84D8FC371AB3D7FB619AFA25C8C7249A47AAA77E1C7BF4286",
+                      "name":  "sts2.xml"
+                  },
+                  {
+                      "sha256":  "2CDB60C475E6AC08681988B098B63017C25B6E504C0F85346091E47DB79F5796",
+                      "name":  "STS2-RitsuLib.dll"
+                  },
+                  {
+                      "sha256":  "5CC4214BCAD55113153DADD23D816821A669011C3A06E34F67F7E56125BF026A",
+                      "name":  "STS2-RitsuLib.Runtime.dll"
+                  },
+                  {
+                      "sha256":  "F8D026FBE8B0681875841DBFEA1AD1EDD316B31E8FA45AFE4CF0C283F8DF68A2",
+                      "name":  "STS2-RitsuLib.Runtime.xml"
+                  },
+                  {
+                      "sha256":  "4984C4F20B06D92D29A3096E911BB3BC6CEE38CBB95F72238CDC42F502ADD056",
+                      "name":  "STS2-RitsuLib.Settings.dll"
+                  },
+                  {
+                      "sha256":  "39DBD77CFF7A7F42AE4D369E3ECA73A2E2F8E34CA947A8FA49819778763C3E7F",
+                      "name":  "STS2-RitsuLib.Shared.dll"
+                  },
+                  {
+                      "sha256":  "47D1F4A22674AB3A03168366CB08152063F6857915206CE0B4EC445BBA2FE33A",
+                      "name":  "STS2-RitsuLib.Ui.dll"
+                  },
+                  {
+                      "sha256":  "6306AAD9D8D3AA500B89F5158B16738776D640E4F9D17EF2B4384BC6CE7F1405",
+                      "name":  "STS2-RitsuLib.xml"
+                  },
+                  {
+                      "sha256":  "FBE8C2FCB4ADC01DA5C3C8ED0D727903B8FDA1E6B84DA3C447C9794615F30664",
+                      "name":  "System.IO.Hashing.dll"
+                  },
+                  {
+                      "sha256":  "5E1DA8C22E0A33CC24078965C80CA4093A2C806AA580076441EB0F27EF38B56F",
+                      "name":  "Vortice.DirectX.dll"
+                  },
+                  {
+                      "sha256":  "616983BED0D84C6AD499D1963EDF12BB5BFE701E60A3BA860D1768516BF56D20",
+                      "name":  "Vortice.DXGI.dll"
+                  },
+                  {
+                      "sha256":  "BF8AA203D01C565A26811E5B32AFBA5030C7C6E05298487C6D24608E4FB43FAD",
+                      "name":  "Vortice.Mathematics.dll"
+                  }
+              ],
+    "variant":  "stable-0.111.0"
+}

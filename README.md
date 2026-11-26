@@ -1,6 +1,6 @@
 # 三国杀：一将成名
 
-现已完成武诸葛亮与威董卓两名角色。作者 CDphantom（B站：CD幻影），部分内容采用 AI 生成。Mod 交流群：1106930563。
+现已完成武诸葛亮、威董卓和威曹操三位角色。作者 CDphantom（B站：CD幻影），部分内容采用 AI 生成。Mod 交流群：1106930563。
 
 这是公开的非商业源码仓库。作者署名 CDphantom；允许非商业修改、免费分享与模组联动，禁止商用和收费转载。具体条款见 [LICENSE](LICENSE)。这不是 MIT/GPL 或 OSI 认可的开源许可。
 
@@ -8,14 +8,15 @@
 
 ## 工程
 
-唯一业务工程是 `mod/Yjcm.csproj`；两角色、事件和通用玩法共用一套源码。`GAME_BETA` 的局部分支处理游戏 API 差异。加载器位于 `loader`，遥测后端与仪表盘位于 `telemetry`。
+唯一业务工程是 `mod/Yjcm.csproj`，三位角色、事件和通用玩法共用一套源码。`GAME_BETA` 是沿用的 0.111+ API 宏，两版均启用。测试版同时启用 `GAME_V0113` 和 `GAME_V0114`。加载器位于 `loader`，遥测后端与仪表盘位于 `telemetry`。
 
-固定依赖：stable 0.107.1、beta 0.111.0；Godot 4.5.1 Mono、.NET SDK 10.0.203（目标框架 net9.0）、Node.js 和 PowerShell 7。不要使用 Steam 当前分支替代固定依赖。
+固定游戏依赖为 stable 0.111.0 和 beta 0.114.0。构建工具包括 Godot 4.5.1 Mono、.NET SDK 10.0.203（目标框架 net9.0）、Node.js 和 PowerShell 7。
 
 游戏 DLL 和素材不公开提交。开发者须合法获取匹配版本依赖，按 `dependencies` 的 manifest 准备文件，并在本地另行准备被忽略的运行素材；单独克隆本仓库不能完整导出或打包。详见 [素材准备说明](docs/资源准备.md) 与 [第三方声明](THIRD_PARTY_NOTICES.md)。
 
 ```powershell
 node ./tools/generate_cards.mjs --write
+node ./tools/generate_caocao_cards.mjs --write
 pwsh ./tools/build.ps1 -Variant all
 pwsh ./tools/package.ps1 -GodotPath 'C:/Tools/Godot_console.exe'
 # 部署是独立显式步骤，仅向 mods/yjcm 写入，要求游戏关闭。

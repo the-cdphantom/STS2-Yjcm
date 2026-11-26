@@ -35,7 +35,7 @@ public sealed class BeiFa : WuZhugeliangCard
 
     /// <summary>卡面显示的数值，升级预览自动生效</summary>
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new DynamicVar(EnergyKey, 7),
+        new EnergyVar(EnergyKey, 7),
         new DynamicVar(DrawKey, 7),
         new DynamicVar(StrKey, 77),
         new DynamicVar(DexKey, 77),

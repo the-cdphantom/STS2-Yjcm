@@ -38,7 +38,7 @@ public sealed class MouGuanYuJuAo : WuZhugeliangCard
         var handPile = PileTypeExtensions.GetPile(PileType.Hand, Owner);
         if (handPile?.Cards != null && handPile.Cards.Count > 0)
         {
-            var selected = await CardSelectCmd.FromHand(
+            var selected = await CardSelectCmd.FromHandForDiscard(
                 choiceContext, Owner,
                 new CardSelectorPrefs(CardSelectorPrefs.DiscardSelectionPrompt, 1),
                 card => card != this, this);

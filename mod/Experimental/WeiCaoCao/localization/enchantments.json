@@ -1,0 +1,6 @@
+{
+  "YJCM_ENCHANTMENT_WEI_CAO_CAO_FU.title": "赋",
+  "YJCM_ENCHANTMENT_WEI_CAO_CAO_FU.description": "保留。同时具有曹操牌库中另一张非初始牌的牌名，附加牌随本牌升级。打出时选择其中一张，按所选牌的费用和效果打出。",
+  "YJCM_ENCHANTMENT_WEI_CAO_CAO_FU.extraCardText": "[gold]赋[/gold]：{AlternateName}",
+  "YJCM_ENCHANTMENT_WEI_CAO_CAO_FU.select_prompt": "选择要打出的牌（按所选牌支付费用）"
+}

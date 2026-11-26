@@ -1,9 +1,9 @@
 {
   "YJCM_RELIC_YJCM_QING_SHI.title": "情势",
-  "YJCM_RELIC_YJCM_QING_SHI.description": "每回合首次使用手中有同名牌的牌时，根据牌类型触发以下效果：攻击牌，该牌造成两次伤害；技能牌，抽一张牌；能力牌，获得一点能量。",
+  "YJCM_RELIC_YJCM_QING_SHI.description": "每回合使用手中有相同牌名的牌时，选择一项（每项每回合限一次）：1. 下次造成的伤害翻倍，若当前为攻击牌则本次攻击生效；2. 获得{energyPrefix:energyIcons(1)}；3. 摸3张牌，然后情势本回合失效。",
   "YJCM_RELIC_YJCM_QING_SHI.flavor": "兵者，行霸道之势，彰王道之实。",
   "YJCM_RELIC_YJCM_JIE_QING_SHI.title": "界情势",
-  "YJCM_RELIC_YJCM_JIE_QING_SHI.description": "每回合前两次使用手中有同名牌的牌时，根据牌类型触发：攻击牌额外造成一次等量伤害；技能牌抽一张牌；能力牌获得一点能量。",
+  "YJCM_RELIC_YJCM_JIE_QING_SHI.description": "每回合每种牌名限一次，使用手中有相同牌名的牌时，选择一项：1. 下次造成的伤害翻倍（若当前为攻击牌则本次攻击生效），并升级一张手牌中的攻击牌；2. 获得3点能量、1点力量和1点敏捷；3. 摸7张牌，然后界情势本回合失效。",
   "YJCM_RELIC_YJCM_JIE_QING_SHI.flavor": "将为军魂，可因势而袭，其有战无类。",
   "YJCM_RELIC_YAO_YUAN_SHU_CAN_HUN.title": "爻袁术残魂",
   "YJCM_RELIC_YAO_YUAN_SHU_CAN_HUN.description": "第一个回合开始时，消耗所有手牌，将等量的背置牌加入手牌。你每使用两张牌，可以消耗一张手牌，将一张背置牌加入手牌。",
@@ -55,7 +55,7 @@
   "YJCM_RELIC_YUAN_BAN_BAI_YIN_SHI_ZI.description": "你受到的所有伤害改为1点。",
   "YJCM_RELIC_YUAN_BAN_BAI_YIN_SHI_ZI.flavor": "100%还原！",
   "YJCM_RELIC_GAO_DA_YI_HAO_CAN_HUN.title": "高达一号残魂",
-  "YJCM_RELIC_GAO_DA_YI_HAO_CAN_HUN.description": "你的手牌始终保持4张（多则选择弃置，少则摸牌）。每次使用牌时，获得6点格挡并随机造成6点伤害。每次弃置牌时，获得1点能量。",
+  "YJCM_RELIC_GAO_DA_YI_HAO_CAN_HUN.description": "你的手牌始终保持4张（多则选择弃置，少则摸牌）。每次使用牌时，获得6点格挡并随机造成6点伤害。每次弃置牌时，获得{energyPrefix:energyIcons(1)}。",
   "YJCM_RELIC_GAO_DA_YI_HAO_CAN_HUN.select_discard": "选择要弃置的牌",
   "YJCM_RELIC_GAO_DA_YI_HAO_CAN_HUN.flavor": "绝境之中，仍有一线生机",
   "YJCM_RELIC_WEI_DONG_ZHUO_GUANG_YONG.title": "犷勇",
@@ -65,6 +65,6 @@
   "YJCM_RELIC_WEI_DONG_ZHUO_JIE_GUANG_YONG.description": "你使用以自己为目标的牌时，增加一点血量上限并摸一张牌，你使用以敌人为目标的牌时，偷取其一种增益，然后若你已受伤，减少一点血量上限",
   "YJCM_RELIC_WEI_DONG_ZHUO_JIE_GUANG_YONG.flavor": "废立全凭手中戟，权倾天下势巍巍",
   "YJCM_RELIC_QI_XING_DENG.title": "七星灯",
-  "YJCM_RELIC_QI_XING_DENG.description": "当你的生命值要降到0或以下时，将生命值回复至7点，获得7点能量并抽7张牌。回合外触发时，能量于下回合获得。（仅限一次）",
+  "YJCM_RELIC_QI_XING_DENG.description": "当你的生命值要降到0或以下时，将生命值回复至7点，获得{energyPrefix:energyIcons(7)}并抽7张牌。回合外触发时，能量于下回合获得。（仅限一次）",
   "YJCM_RELIC_QI_XING_DENG.flavor": "魏延将军，走慢点！"
 }

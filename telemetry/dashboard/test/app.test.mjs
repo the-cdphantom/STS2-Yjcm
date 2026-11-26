@@ -75,3 +75,13 @@ test("selected character is sent to the local dashboard API", async () => {
   await pending;
   assert.match(h.node("#status").textContent, /威董卓/);
 });
+
+test("Wei Cao Cao is available as a dashboard character filter", async () => {
+  const h = harness();
+  h.node("#character").value = "wei_caocao";
+  const pending = h.load();
+  assert.match(h.requests[1].url, /character=wei_caocao/);
+  await h.respond(1, { ...complete(30), characterFilter: "wei_caocao", characterLabel: "威曹操" });
+  await pending;
+  assert.match(h.node("#status").textContent, /威曹操/);
+});

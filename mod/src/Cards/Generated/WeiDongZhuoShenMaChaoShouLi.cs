@@ -54,11 +54,7 @@ public sealed class WeiDongZhuoShenMaChaoShouLi : WeiDongZhuoCard
 
         // 再造成伤害（此时已受狩骊翻倍）
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue + str)
-#if GAME_BETA
             .FromCard(this, cardPlay).Targeting(cardPlay.Target!).Execute(choiceContext);
-#else
-            .FromCard(this).Targeting(cardPlay.Target!).Execute(choiceContext);
-#endif
     }
 
     /// <summary>升级：获得保留</summary>

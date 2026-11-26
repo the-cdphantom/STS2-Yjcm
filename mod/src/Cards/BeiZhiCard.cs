@@ -28,7 +28,8 @@ public sealed class BeiZhiCard : WuZhugeliangCard
     /// <summary>每回合每张牌限一次标记</summary>
     private bool _usedThisTurn;
 
-    public BeiZhiCard() : base(0, CardType.Skill, CardRarity.Token, TargetType.Self) { }
+    public BeiZhiCard() : base(0, CardType.Skill, CardRarity.Token, TargetType.Self, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     /// <summary>卡面：背置牌.png（RitsuLib 保留 Card 后缀，显式指向 bei_zhi.png）</summary>
     public override string CustomPortraitPath => "bei_zhi.png".CardImagePath();

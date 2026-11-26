@@ -11,7 +11,10 @@ internal enum WeiDongZhuoComboVfxStyle
     JiZhan,
     PoRong,
     ZhuiTao,
-    XiaoBen
+    XiaoBen,
+#if WEI_CAO_CAO
+    KuiPan
+#endif
 }
 
 internal static class WeiDongZhuoComboVfx
@@ -22,9 +25,10 @@ internal static class WeiDongZhuoComboVfx
     private const float ImpactScale = 3.9f;
     private const float Duration = 2.34f;
     private static readonly Vector2 SourceCenter = new(-1.59f, -9.295f);
-    private static readonly string ComboRoot = Path.Combine(
+    private static readonly string SpineRoot = Path.Combine(
         Path.GetDirectoryName(typeof(WeiDongZhuoComboVfx).Assembly.Location)!,
-        "Spine", "WeiDongZhuo", "Combo");
+        "Spine");
+    private static readonly string ComboRoot = Path.Combine(SpineRoot, "WeiDongZhuo", "Combo");
     private static CanvasLayer? _activeLayer;
 
     public static bool Preflight()
@@ -93,7 +97,11 @@ internal static class WeiDongZhuoComboVfx
     private static CanvasItem CreateSprite(Vector2 position, float scale, WeiDongZhuoComboVfxStyle style)
     {
         var asset = GetAsset(style);
-        string assetRoot = Path.Combine(ComboRoot, asset.Folder);
+        string root = ComboRoot;
+#if WEI_CAO_CAO
+        if (style == WeiDongZhuoComboVfxStyle.KuiPan) root = Path.Combine(SpineRoot, "WeiCaoCao");
+#endif
+        string assetRoot = Path.Combine(root, asset.Folder);
         string skeletonPath = Path.Combine(assetRoot, asset.Skeleton);
         string atlasPath = Path.Combine(assetRoot, asset.Atlas);
         if (!File.Exists(skeletonPath) || !File.Exists(atlasPath))
@@ -129,6 +137,9 @@ internal static class WeiDongZhuoComboVfx
         WeiDongZhuoComboVfxStyle.PoRong => ("PoRong", "weizhangliao_jineng.skel", "weizhangliao_jineng.atlas"),
         WeiDongZhuoComboVfxStyle.ZhuiTao => ("ZhuiTao", "weigongsunzan_jineng.skel", "weigongsunzan_jineng.atlas"),
         WeiDongZhuoComboVfxStyle.XiaoBen => ("XiaoBen", "weimateng_jineng.skel", "weimateng_jineng.atlas"),
+#if WEI_CAO_CAO
+        WeiDongZhuoComboVfxStyle.KuiPan => ("KuiPan", "weicaozhang_jineng.skel", "weicaozhang_jineng.atlas"),
+#endif
         _ => throw new ArgumentOutOfRangeException(nameof(style), style, "未知的威董卓连招特效。")
     };
 }

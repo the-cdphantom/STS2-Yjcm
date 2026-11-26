@@ -1,20 +1,41 @@
 @echo off
 setlocal
-title WuZhugeliang Telemetry Dashboard
-cd /d "%~dp0"
+title Yjcm Telemetry Dashboard
+cd /d "%~dp0" || goto launch_failed
 
-rem Open the existing dashboard when the service is already running.
-curl.exe --silent --show-error --fail --max-time 2 "http://127.0.0.1:4173/" >nul 2>&1
+if not defined WUZHUGELIANG_DASHBOARD_PORT set "WUZHUGELIANG_DASHBOARD_PORT=4173"
+set "URL=http://127.0.0.1:%WUZHUGELIANG_DASHBOARD_PORT%"
+
+rem Reuse only the Yjcm service, rather than any website listening on this port.
+curl.exe --noproxy "*" --silent --fail --max-time 2 "%URL%/health" 2>nul | findstr.exe /b /c:"yjcm-telemetry-dashboard" >nul
 if not errorlevel 1 (
-    echo Dashboard is already running at http://127.0.0.1:4173/
-    start "" "http://127.0.0.1:4173/"
+    echo Dashboard is already running at %URL%/
+    start "" "%URL%/"
+    if errorlevel 1 goto launch_failed
     exit /b 0
+)
+
+rem Prefer node from PATH; fall back to the standard Windows installer location.
+set "NODE=node.exe"
+where /q node.exe
+if errorlevel 1 (
+    if exist "%ProgramFiles%\nodejs\node.exe" (
+        set "NODE=%ProgramFiles%\nodejs\node.exe"
+    ) else (
+        echo.
+        echo Node.js was not found.
+        echo Install Node.js 20 or newer, then double-click this file again.
+        echo If Node.js is installed in a custom folder, add it to PATH.
+        echo.
+        pause
+        exit /b 1
+    )
 )
 
 if not exist "dashboard\config.local.json" (
     echo First-time setup is required.
     echo.
-    call npm.cmd run dashboard:setup
+    "%NODE%" dashboard\setup.mjs
     if errorlevel 1 (
         echo.
         echo Setup failed. Check the message above and try again.
@@ -27,10 +48,12 @@ if not exist "dashboard\config.local.json" (
 echo Starting the local telemetry dashboard...
 echo Keep this window open. Press Ctrl+C here to stop it.
 echo.
-call npm.cmd run dashboard
+"%NODE%" dashboard\server.mjs --open
+if errorlevel 1 goto launch_failed
+exit /b 0
 
-if errorlevel 1 (
-    echo.
-    echo Dashboard startup failed. Check the message above.
-    pause
-)
+:launch_failed
+echo.
+echo Dashboard startup failed. Check the message above.
+pause
+exit /b 1

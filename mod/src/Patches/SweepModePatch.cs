@@ -128,7 +128,11 @@ internal static class SweepModePatch
             VfxDuration.Standard);
 
         foreach (Creature enemy in escaping)
+#if GAME_V0113
+            NCombatRoom.Instance?.GetCreatureNode(enemy)?.SetIsInteractable(on: false, changeVisibilityImmediately: true);
+#else
             NCombatRoom.Instance?.GetCreatureNode(enemy)?.ToggleIsInteractable(on: false);
+#endif
 
         await Cmd.CustomScaledWait(0.35f, 0.65f);
         await Task.WhenAll(escaping.Select(AnimateEscape));
@@ -229,16 +233,8 @@ internal static class SweepModePatch
         _ => WuZhugeliangSettings.SweepNormalChance
     };
 
-    private static bool IsModCharacter(Player player)
-    {
-        if (player.Character is WuZhugeliang)
-            return true;
-#if WEI_DONG_ZHUO
-        if (player.Character is WeiDongZhuo)
-            return true;
-#endif
-        return false;
-    }
+    private static bool IsModCharacter(Player player) =>
+        WuZhugeliangSettings.MatchesCharacterScope(WuZhugeliangSettings.OwnModCharacters, player.Character.GetType());
 
     private static async Task AnimateEscape(Creature enemy)
     {

@@ -99,7 +99,7 @@ public sealed class XunXuCanHun : ModRelicTemplate, IModRightClickableRelic
         // 先记录玩家选择，第二次选择结束前不改动战斗状态。
         // 多人模式允许队友在本动作等待选择时继续行动；若此处提前弃牌，
         // 两端会在不同时间获得战术大师等弃牌效果并触发状态分歧。
-        var toDiscard = (await CardSelectCmd.FromHand(
+        var toDiscard = (await CardSelectCmd.FromHandForDiscard(
             ctx, player,
             new CardSelectorPrefs(
                 new MegaCrit.Sts2.Core.Localization.LocString("cards", "xun_xu.discard_prompt"),

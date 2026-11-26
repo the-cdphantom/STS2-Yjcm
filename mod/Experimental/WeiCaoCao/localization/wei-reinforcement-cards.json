@@ -1,0 +1,19 @@
+{
+  "YJCM_CARD_WEI_CAO_CAO_DESIGN.zhou_xi": "选择一项，或直接确认结束选择",
+  "YJCM_CARD_WEI_CAO_CAO_MOU_DENG_AI_ZHOU_XI.title": "谋邓艾-骤袭",
+  "YJCM_CARD_WEI_CAO_CAO_MOU_DENG_AI_ZHOU_XI.description": "弃置当前手牌中所有不能指定敌人为目标的牌，选择至多等量项：1.获得1点敏捷。2.随机偷取一点增益。3.造成6点伤害。然后将选择项执行选择次序次",
+  "YJCM_CARD_WEI_CAO_CAO_XIA_HOU_EN_SHI_WU.title": "夏侯恩-恃武",
+  "YJCM_CARD_WEI_CAO_CAO_XIA_HOU_EN_SHI_WU.description": "造成{Damage:diff()}点伤害，将抽牌堆一张随机攻击牌加入手牌。[gold]军合[/gold]：本场战斗内将其升级",
+  "YJCM_CARD_WEI_CAO_CAO_ZHAO_YAN_BING_JI.title": "赵俨-秉纪",
+  "YJCM_CARD_WEI_CAO_CAO_ZHAO_YAN_BING_JI.description": "当手牌中除本牌之外的牌类型均相同时才能打出，造成{Damage:diff()}点伤害",
+  "YJCM_CARD_WEI_CAO_CAO_YUE_CHEN_PO_RUI.title": "乐綝-破锐",
+  "YJCM_CARD_WEI_CAO_CAO_YUE_CHEN_PO_RUI.description": "每个回合结束时，若你有弃置过手牌，每弃置一张，随机造成{DamagePerDiscard:diff()}点伤害，至多5次，[gold]军合[/gold]：改为至多7次",
+  "YJCM_CARD_WEI_CAO_CAO_WEN_QIN_GUANG_AO.title": "文钦-犷骜",
+  "YJCM_CARD_WEI_CAO_CAO_WEN_QIN_GUANG_AO.description": "对所有敌人造成{Damage:diff()}点伤害，[gold]军合[/gold]：摸一张牌",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_DEXTERITY.title": "敏捷",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_DEXTERITY.description": "获得1点敏捷。",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_STEAL.title": "偷取增益",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_STEAL.description": "随机偷取一点增益。",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_DAMAGE.title": "伤害",
+  "YJCM_CARD_WEI_CAO_CAO_CHOICE_ZHOU_XI_DAMAGE.description": "造成6点伤害。"
+}

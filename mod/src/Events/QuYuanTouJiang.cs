@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Runs;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 using STS2RitsuLib.Scaffolding.Content;
@@ -22,6 +23,12 @@ public sealed class QuYuanTouJiang : ModEventTemplate
     public override EventAssetProfile AssetProfile => new(
         InitialPortraitPath: PortraitPath
     );
+
+    public override bool IsAllowed(IRunState runState) =>
+        IsAllowedForScope(runState, WuZhugeliangSettings.ModEventScope);
+
+    internal static bool IsAllowedForScope(IRunState runState, string scope) =>
+        WuZhugeliangSettings.MatchesAnyPlayerScope(runState, scope);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions() =>
     [

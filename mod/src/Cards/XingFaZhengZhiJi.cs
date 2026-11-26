@@ -54,7 +54,7 @@ public sealed class XingFaZhengZhiJi : WuZhugeliangCard
         CardModel[] discarded = [];
         if (maxDiscard > 0)
         {
-            var selected = await CardSelectCmd.FromHand(
+            var selected = await CardSelectCmd.FromHandForDiscard(
                 choiceContext, Owner,
                 new CardSelectorPrefs(
                     new MegaCrit.Sts2.Core.Localization.LocString("cards", "YJCM_CARD_XING_FA_ZHENG_ZHI_JI.select_prompt"),

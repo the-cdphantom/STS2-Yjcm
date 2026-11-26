@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://Experimental/WeiCaoCao/images/weicaocao_rest_site.png" id="1_restsite"]
+
+[node name="WeiCaoCaoRestSite" type="Node2D"]
+
+[node name="ControlRoot" type="Control" parent="."]
+
+[node name="Visuals" type="Sprite2D" parent="ControlRoot"]
+position = Vector2(0, -58)
+scale = Vector2(0.465, 0.465)
+texture = ExtResource("1_restsite")
+
+[node name="Hitbox" type="Control" parent="ControlRoot"]
+unique_name_in_owner = true
+offset_left = -210.0
+offset_top = -310.0
+offset_right = 210.0
+offset_bottom = 207.0
+
+[node name="SelectionReticle" type="Control" parent="ControlRoot"]
+unique_name_in_owner = true
+offset_left = -220.0
+offset_top = -320.0
+offset_right = 220.0
+offset_bottom = 217.0
+
+[node name="ThoughtBubbleRight" type="Control" parent="ControlRoot"]
+unique_name_in_owner = true
+offset_left = 125.0
+offset_top = -140.0
+offset_right = 125.0
+offset_bottom = -140.0
+
+[node name="ThoughtBubbleLeft" type="Control" parent="ControlRoot"]
+unique_name_in_owner = true
+offset_left = -120.0
+offset_top = -105.0
+offset_right = -120.0
+offset_bottom = -105.0

@@ -11,9 +11,7 @@ public static class LeBuSiShuHoverTipsPatch
 {
     public static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
     {
-        if (__instance.GetType().Assembly != typeof(LeBuSiShu).Assembly) return;
-        if (__instance is not LeBuSiShu &&
-            __instance.Id.Entry != "YJCM_CARD_WEI_DONG_ZHUO_LE_BU_SI_SHU") return;
+        if (__instance is not (LeBuSiShu or WeiDongZhuoLeBuSiShu or WeiCaoCaoLeBuSiShu)) return;
         // Effects from another card/relic may genuinely add Exhaust. Keep that explanation.
         if (__instance.Keywords.Contains(CardKeyword.Exhaust)) return;
         var exhaustTip = HoverTipFactory.FromKeyword(CardKeyword.Exhaust);

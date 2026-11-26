@@ -110,6 +110,17 @@ public static class LoaderBootstrap
             .ToList();
         if (candidates.Count == 0) return null;
         if (host == null) return candidates[^1].Path;
+
+        // Prefer the exact API minor (0.111 stable, 0.114 beta). If the host is
+        // between releases (for example 0.113), choose the next newer variant
+        // instead of silently loading the older stable assembly.
+        var exact = candidates.FirstOrDefault(item =>
+            item.Version!.Major == host.Major && item.Version.Minor == host.Minor);
+        if (exact.Path != null) return exact.Path;
+
+        var next = candidates.FirstOrDefault(item => item.Version! > host);
+        if (next.Path != null) return next.Path;
+
         return candidates.LastOrDefault(item => item.Version! <= host).Path ?? candidates[^1].Path;
     }
 

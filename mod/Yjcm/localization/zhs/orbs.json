@@ -18,7 +18,7 @@
   "YJCM_ORB_ZHU_GE_LIAN_NU_ORB.title": "诸葛连弩",
   "YJCM_ORB_ZHU_GE_LIAN_NU_ORB.description": "所有攻击牌费用-1。",
   "YJCM_ORB_CI_XIONG_SHUANG_GU_JIAN_ORB.title": "雌雄双股剑",
-  "YJCM_ORB_CI_XIONG_SHUANG_GU_JIAN_ORB.description": "攻击指定非攻击意图敌人→+1能量；技能指定攻击意图敌人→+1能量。",
+  "YJCM_ORB_CI_XIONG_SHUANG_GU_JIAN_ORB.description": "攻击指定非攻击意图敌人→获得{energyPrefix:energyIcons(1)}；技能指定攻击意图敌人→获得{energyPrefix:energyIcons(1)}。",
   "YJCM_ORB_BA_GUA_ZHEN_ORB.title": "八卦阵",
   "YJCM_ORB_BA_GUA_ZHEN_ORB.description": "回合开始获得意图为攻击的敌人数量×10的格挡。",
   "YJCM_ORB_REN_WANG_DUN_ORB.title": "仁王盾",
@@ -38,9 +38,9 @@
   "YJCM_ORB_HAN_BING_JIAN_ORB.title": "寒冰剑",
   "YJCM_ORB_HAN_BING_JIAN_ORB.description": "每回合第一次对敌人造成伤害后，使其失去2点力量。",
   "YJCM_ORB_ZHANG_BA_SHE_MAO_ORB.title": "丈八蛇矛",
-  "YJCM_ORB_ZHANG_BA_SHE_MAO_ORB.description": "每回合开始时可以弃置两张手牌，然后将一张无色杀加入手牌，并选择一张攻击牌获得重放1。",
+  "YJCM_ORB_ZHANG_BA_SHE_MAO_ORB.description": "每回合开始时可以弃置两张手牌，然后将一张无色杀加入手牌，并选择一张攻击牌获得[gold]重放[/gold]1。",
   "YJCM_ORB_QING_GANG_JIAN_ORB.title": "青钢剑",
   "YJCM_ORB_QING_GANG_JIAN_ORB.description": "所有攻击无视格挡。",
   "YJCM_ORB_WEI_DONG_ZHUO_ZHANG_BA_SHE_MAO_ORB.title": "丈八蛇矛",
-  "YJCM_ORB_WEI_DONG_ZHUO_ZHANG_BA_SHE_MAO_ORB.description": "每回合开始时可以弃置两张手牌，然后将一张无色杀加入手牌，并选择一张攻击牌获得重放1。"
+  "YJCM_ORB_WEI_DONG_ZHUO_ZHANG_BA_SHE_MAO_ORB.description": "每回合开始时可以弃置两张手牌，然后将一张无色杀加入手牌，并选择一张攻击牌获得[gold]重放[/gold]1。"
 }

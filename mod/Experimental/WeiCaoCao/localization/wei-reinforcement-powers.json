@@ -1,0 +1,5 @@
+{
+  "YJCM_POWER_WEI_CAO_CAO_PO_RUI_POWER.title": "破锐",
+  "YJCM_POWER_WEI_CAO_CAO_PO_RUI_POWER.description": "每个回合结束时，你每弃置过一张手牌，随机造成{Amount}点伤害，至多{MaxHits}次。",
+  "YJCM_POWER_WEI_CAO_CAO_PO_RUI_POWER.smartDescription": "每个回合结束时，你每弃置过一张手牌，随机造成{Amount}点伤害，至多5次；军合强化后至多7次。"
+}

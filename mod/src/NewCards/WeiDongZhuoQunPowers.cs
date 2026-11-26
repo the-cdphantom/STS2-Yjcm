@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Saves.Runs;
 using MegaCrit.Sts2.Core.ValueProps;
 using STS2RitsuLib.Interop.AutoRegistration;
 using STS2RitsuLib.Scaffolding.Content;
@@ -607,25 +608,66 @@ public sealed class QuXianPower : WeiDongZhuoQunPower
 [RegisterPower]
 public sealed class NeiFaPower : WeiDongZhuoQunPower
 {
-    private CardType? _blocked;
-    private CardType? _free;
+    [SavedProperty]
+    public int BlockedCardType { get; set; } = -1;
+    [SavedProperty]
+    public int FreeCardType { get; set; } = -1;
+    [SavedProperty]
+    public int RemainingFreePlays { get; set; }
+
     protected override string LocKey => "NEI_FA";
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.None;
-    public void Configure(CardType blocked, CardType free) { _blocked = blocked; _free = free; }
+    public override int DisplayAmount => RemainingFreePlays;
+    public override LocString Description
+    {
+        get
+        {
+            if (BlockedCardType < 0 || FreeCardType < 0) return base.Description;
+            var description = new LocString("powers", "YJCM_POWER_NEI_FA.active_description");
+            description.Add("BlocksSkills", BlockedCardType == (int)CardType.Skill);
+            description.Add("Remaining", RemainingFreePlays);
+            return description;
+        }
+    }
+
+    internal static int CountBlockedCards(IEnumerable<CardModel> hand, CardType blocked) =>
+        hand.Count(card => card.Type == blocked);
+
+    public void Configure(CardType blocked, CardType free, int freePlays)
+    {
+        AssertMutable();
+        BlockedCardType = (int)blocked;
+        FreeCardType = (int)free;
+        RemainingFreePlays = Math.Max(0, freePlays);
+        InvokeDisplayAmountChanged();
+    }
 
     public override bool ShouldPlay(CardModel card, AutoPlayType autoPlayType) =>
-        card.Owner?.Creature != Owner || _blocked == null || card.Type != _blocked.Value;
+        card.Owner?.Creature != Owner || (int)card.Type != BlockedCardType;
 
     public override bool TryModifyEnergyCostInCombat(CardModel card, decimal originalCost, out decimal modifiedCost)
     {
-        if (card.Owner?.Creature == Owner && _free != null && card.Type == _free.Value)
+        if (RemainingFreePlays > 0 && card.Owner?.Creature == Owner && (int)card.Type == FreeCardType)
         {
             modifiedCost = 0;
             return true;
         }
         modifiedCost = originalCost;
         return false;
+    }
+
+    public override async Task BeforeCardPlayed(CardPlay play)
+    {
+        await base.BeforeCardPlayed(play);
+        // Costs are already paid. Reserve this use before nested plays; Replay is one paid play.
+        if (play.IsFirstInSeries && RemainingFreePlays > 0 && play.Card.Owner?.Creature == Owner &&
+            (int)play.Card.Type == FreeCardType)
+        {
+            RemainingFreePlays--;
+            InvokeDisplayAmountChanged();
+        }
+        // Do not remove at zero: the opposite card type remains blocked until turn end.
     }
 
     public override async Task AfterSideTurnEnd(PlayerChoiceContext context, CombatSide side,

@@ -1,6 +1,9 @@
 # 一将成名遥测：部署与验收教程
 
-本目录存放一将成名的 Cloudflare Worker、本地仪表盘与测试；游戏内客户端统一位于 `mod/src/Telemetry`。申请方 ID 精确为 `Yjcm`，覆盖武诸葛亮与威董卓，不读取旧模组 ID 的历史数据。个人配置与登录缓存被 Git 忽略。
+本目录存放一将成名的 Cloudflare Worker、本地仪表盘与测试；游戏内客户端统一位于 `mod/src/Telemetry`。申请方 ID 精确为 `Yjcm`，覆盖武诸葛亮、威董卓与威曹操，不读取旧模组 ID 的历史数据。个人配置与登录缓存被 Git 忽略。
+
+本地查看数据可双击 `E:/sts2mod/打开遥测仪表盘.cmd`，或本目录的 `打开遥测仪表盘.cmd`。
+服务地址为 `http://127.0.0.1:4173/`。项目已归并到 `E:/sts2mod/Yjcm/telemetry`，下文旧“武诸葛亮遥测”目录不再使用。
 
 ## 你需要亲自完成的事情
 
@@ -15,8 +18,8 @@
 
 ## 当前代码状态
 
-- Mod 端已接好 RitsuLib 授权系统，由唯一工程分别构建 0.107.1 与 0.111.0 两个 API 目标。
-- 同一申请方覆盖武诸葛亮与威董卓，不新增第二个授权弹窗；跑局通过原版 `run_character_ids` 在本地仪表盘中分角色统计。
+- Mod 端已接好 RitsuLib 授权系统，由唯一工程分别构建 stable 0.111.0 与 beta 0.113.0 两个 API 目标。
+- 同一申请方覆盖武诸葛亮、威董卓与威曹操，不新增第二个授权弹窗；跑局通过原版 `run_character_ids` 在本地仪表盘中分角色统计。
 - 双版本 Loader 会单独调用遥测注册入口，不依赖 `MainFile.Initialize`。
 - Cloudflare Worker 已部署并通过 `/health` 检查，Mod 端使用根地址 `https://wuzhugeliang-telemetry.cdphantom-mod.workers.dev`；是否发送各类数据仍完全取决于玩家在 RitsuLib 中的逐项授权。
 - Worker 只接受当前申请方 `Yjcm` 的四种白名单事件，并拒绝错误 schema、类别、事件名、过大批次和非 JSON 请求；旧申请方 `WuZhugeliang` 的历史数据不再兼容或读取。

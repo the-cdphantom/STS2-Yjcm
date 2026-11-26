@@ -46,7 +46,7 @@ public sealed class WeiGuPower : ModPowerTemplate
         if (selfTargetCards == null || selfTargetCards.Count == 0) return;
 
         // 让玩家选择要弃置的牌（可以跳过）
-        var chosen = await CardSelectCmd.FromHand(choiceContext, cardPlay.Card.Owner,
+        var chosen = await CardSelectCmd.FromHandForDiscard(choiceContext, cardPlay.Card.Owner,
             new CardSelectorPrefs(SelectPrompt, 0, 1),
             c => selfTargetCards.Contains(c), this);
         var toDiscard = chosen.FirstOrDefault();

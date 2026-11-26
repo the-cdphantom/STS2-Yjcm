@@ -65,7 +65,7 @@ public sealed class WeiLiuBeiLieXiang : WuZhugeliangCard
         await PowerCmd.Apply<StrengthPower>(choiceContext, cardPlay.Target!, -x, Owner.Creature, this, false);
 
         // 下回合抽X张牌
-        await PowerCmd.Apply<LieXiangDrawPower>(choiceContext, Owner.Creature, x, Owner.Creature, this, false);
+        await PowerCmd.Apply<DrawCardsNextTurnPower>(choiceContext, Owner.Creature, x, Owner.Creature, this, false);
     }
 
     /// <summary>升级：10→15</summary>

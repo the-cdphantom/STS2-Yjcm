@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Runs;
 using STS2RitsuLib.RunData;
 
@@ -14,6 +15,25 @@ internal static class PlayerSkinCases
 
     public static void Run(Assembly mod, Action<bool, string> check)
     {
+        // Bind the real character-select detours. Checking the methods by reflection
+        // alone misses Harmony failures when the game's arguments change.
+        var select = typeof(NCharacterSelectScreen).GetMethod(nameof(NCharacterSelectScreen.SelectCharacter))!;
+        var harmony = new Harmony("Yjcm.tests.skin-select");
+        try
+        {
+            foreach (string name in new[] { "WuZhugeliangSkinSelectPatch", "WeiDongZhuoSkinSelectPatch" })
+            {
+                Type patch = mod.GetType("Yjcm." + name, true)!;
+                harmony.CreateClassProcessor(patch).Patch();
+                check(Harmony.GetPatchInfo(select)?.Postfixes.Any(p => p.PatchMethod.DeclaringType == patch) == true,
+                    name + " must attach to the native character-select method");
+            }
+        }
+        finally
+        {
+            harmony.Unpatch(select, HarmonyPatchType.All, harmony.Id);
+        }
+
         Type api = mod.GetType("Yjcm.PlayerSkins", true)!;
         Type dataType = mod.GetType("Yjcm.PlayerSkinSelection", true)!;
         Type wu = mod.GetType("Yjcm.WuZhugeliang", true)!;

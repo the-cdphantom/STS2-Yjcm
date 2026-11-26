@@ -19,8 +19,12 @@ public static class WuJiangExtraHoverTipsPatch
 {
     public static void Postfix(ModCardTemplate __instance, ref IEnumerable<IHoverTip> __result)
     {
-        if (__instance is not WuZhugeliangCard wc) return;
-        if (!wc.TryGetWuJiangHoverTip(out var tip)) return;
-        __result = __result.Concat([tip]).ToList();
+        if (__instance is WuZhugeliangCard wc && wc.TryGetWuJiangHoverTip(out var tip))
+            __result = __result.Concat([tip]).ToList();
+        // Design cards supply their own faction tip. Only append to the copied god cards here.
+        else if (__instance is WeiCaoCaoCard and not WeiCaoCaoDesignCard
+                 && __instance.Tags.Contains(YjcmCardTags.WuJiang)
+                 && __instance.Tags.Contains(YjcmCardTags.ShenJiang))
+            __result = __result.Concat([WuJiangHoverTip.ForCard(__instance.Tags)]).ToList();
     }
 }

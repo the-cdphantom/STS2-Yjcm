@@ -1,6 +1,7 @@
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
@@ -12,8 +13,7 @@ namespace Yjcm;
 
 /// <summary>
 /// 张翼-暮锐：1费罕见攻击牌。造成{Damage}点伤害，
-/// 回合开始时若此牌在弃牌堆中，自动打出一次。升级后0费。
-/// 自动打出由 YjcmPatches.MuRuiPatch 实现。
+/// 持有者回合开始时从抽牌堆、弃牌堆或手牌自动打出。升级后0费。
 /// </summary>
 [RegisterCard(typeof(WuZhugeliangCardPool))]
 public sealed class ZhangYiMuRui : WuZhugeliangCard
@@ -33,6 +33,9 @@ public sealed class ZhangYiMuRui : WuZhugeliangCard
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(ZhangYiMuRui).Assembly.Location)!,
         "Voice", "Bank", "Assets", "mu_rui.wav");
+
+    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player) =>
+        player == Owner ? MuRuiPatch.AutoPlayAtTurnStart(choiceContext, this) : Task.CompletedTask;
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {

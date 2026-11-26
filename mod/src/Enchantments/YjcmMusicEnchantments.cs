@@ -1,4 +1,3 @@
-using Godot;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Combat;
@@ -12,8 +11,6 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
-using MegaCrit.Sts2.Core.Nodes.Combat;
-using MegaCrit.Sts2.Core.Nodes.Multiplayer;
 using MegaCrit.Sts2.Core.Saves.Runs;
 using MegaCrit.Sts2.Core.ValueProps;
 using STS2RitsuLib.Interop.AutoRegistration;
@@ -67,51 +64,35 @@ public sealed class TanBan : YjcmMusicEnchantment
 
         var enchantedCard = Card;
         var owner = enchantedCard.Owner;
+        if (CombatManager.Instance.IsOverOrEnding || owner.Creature.IsDead) return;
         var selected = (await CardSelectCmd.FromHand(
             choiceContext,
             owner,
             new CardSelectorPrefs(SelectCardPrompt, 0, 1),
-            card => card != enchantedCard && card.Enchantment is not TanBan,
+            card => card != enchantedCard && card.Enchantment is not TanBan &&
+                    !card.Keywords.Contains(CardKeyword.Unplayable),
             null)).FirstOrDefault();
 
         // 原牌一经打出，檀板即失效；即使玩家跳过或取消目标选择亦不保留。
         ConsumeEnchantment();
-        if (selected == null) return;
+        if (selected == null || !CanAutoPlay(selected)) return;
 
-        selected.SetToFreeThisTurn();
         Creature? target = null;
-        if (RequiresManualTarget(selected.TargetType))
+        if (TanBanTargetSelection.RequiresManualTarget(selected.TargetType))
         {
-            target = await SelectTargetAsync(selected);
+            target = await TanBanTargetSelection.SelectTargetAsync(choiceContext, selected);
             if (target == null) return;
         }
 
+        if (!CanAutoPlay(selected) || (target != null &&
+            (owner.Creature.CombatState?.Creatures.Contains(target) != true || !selected.IsValidTarget(target)))) return;
+        // AutoPlay 本身不消耗费用；取消选择不能改变该手牌之后的正常费用。
         await CardCmd.AutoPlay(choiceContext, selected, target, AutoPlayType.Default, false, false);
     }
 
-    private static bool RequiresManualTarget(TargetType targetType) =>
-        targetType is TargetType.AnyEnemy or TargetType.AnyAlly or TargetType.AnyPlayer;
-
-    private static async Task<Creature?> SelectTargetAsync(CardModel card)
-    {
-        var targetManager = NTargetManager.Instance;
-        if (targetManager.IsInSelection) return null;
-
-        targetManager.StartTargeting(
-            card.TargetType,
-            Vector2.Zero,
-            TargetMode.ClickMouseToTarget,
-            () => CombatManager.Instance.IsOverOrEnding || card.Owner.Creature.IsDead,
-            null);
-
-        var selectedNode = await targetManager.SelectionFinished();
-        return selectedNode switch
-        {
-            NCreature creatureNode => creatureNode.Entity,
-            NMultiplayerPlayerState playerNode => playerNode.Player.Creature,
-            _ => null
-        };
-    }
+    internal static bool CanAutoPlay(CardModel card) =>
+        !CombatManager.Instance.IsOverOrEnding && !card.Owner.Creature.IsDead &&
+        card.Pile?.Type == PileType.Hand && !card.Keywords.Contains(CardKeyword.Unplayable);
 }
 
 /// <summary>胡笳：回合末在手时给格挡，弃置时按不同费用生成临时牌。</summary>

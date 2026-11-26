@@ -99,6 +99,20 @@ public class MainFile
         catch (Exception ex) { Logger.Warn($"火烧洛阳魔典候选注册失败（继续）: {ex.Message}"); }
 #endif
 #endif
+#if WEI_CAO_CAO
+        try
+        {
+            RitsuLibFramework.RegisterArchaicToothTranscendenceMapping(
+                new ModelId("CARD", "YJCM_CARD_WEI_CAO_CAO_DUO_YUE"), typeof(WeiCaoCaoJieDuoYue), ModId);
+        }
+        catch (Exception ex) { Logger.Warn($"掇月转化注册失败（继续）: {ex.Message}"); }
+        try
+        {
+            RitsuLibFramework.RegisterDustyTomeCard(
+                new ModelId("CHARACTER", "YJCM_CHARACTER_WEI_CAO_CAO"), typeof(WeiCaoCaoXieTianZi), ModId);
+        }
+        catch (Exception ex) { Logger.Warn($"挟天子以令诸侯魔典候选注册失败（继续）: {ex.Message}"); }
+#endif
         // 欧洛巴斯之触遗物升级：情势 → 界情势
 #if GAME_BETA
         RitsuLibFramework.RegisterTouchOfOrobasRefinementMapping<YjcmQingShi, YjcmJieQingShi>();
@@ -130,7 +144,10 @@ public class MainFile
         Api.PublicApi.Initialize([
             "YJCM_CHARACTER_WU_ZHUGELIANG",
 #if WEI_DONG_ZHUO
-            "YJCM_CHARACTER_WEI_DONG_ZHUO"
+            "YJCM_CHARACTER_WEI_DONG_ZHUO",
+#endif
+#if WEI_CAO_CAO
+            "YJCM_CHARACTER_WEI_CAO_CAO",
 #endif
         ]);
         Logger.Info("一将成名 Mod 加载成功，双向联动 API v1 已就绪。");

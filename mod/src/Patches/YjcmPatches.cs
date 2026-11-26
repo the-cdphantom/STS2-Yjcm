@@ -199,30 +199,18 @@ public static class QingGangJianIgnoreBlockPatch
 /// </summary>
 public static class MuRuiPatch
 {
-    internal static async Task AutoPlayAtTurnStart(PlayerChoiceContext choiceContext, Player player)
+    internal static async Task AutoPlayAtTurnStart(PlayerChoiceContext choiceContext, ZhangYiMuRui card)
     {
+        var player = card.Owner;
         if (CombatManager.Instance.IsOverOrEnding || player.Creature.IsDead)
             return;
 
-        var discardPile = PileTypeExtensions.GetPile(PileType.Discard, player);
-        if (discardPile?.Cards == null) return;
+        if (card.Pile?.Type is not (PileType.Draw or PileType.Discard or PileType.Hand))
+            return;
 
-        var muRuiCards = discardPile.Cards
-            .Where(c => c is ZhangYiMuRui)
-            .ToList();
-
-        foreach (var card in muRuiCards)
-        {
-            // 前一张暮锐可能已经击杀目标；每次重新读取可攻击目标，避免向已失效
-            // 的 Creature 发起自动出牌。
-            var enemies = player.Creature.CombatState?.HittableEnemies.ToList();
-            Creature? target = null;
-            if (enemies != null && enemies.Count > 0)
-                target = player.RunState.Rng.CombatCardSelection.NextItem(enemies);
-
-            if (target != null)
-                await CardCmd.AutoPlay(choiceContext, card, target, AutoPlayType.Default, false, false);
-        }
+        var enemies = player.Creature.CombatState?.HittableEnemies.ToList();
+        if (enemies is { Count: > 0 })
+            await CardCmd.AutoPlay(choiceContext, card, player.RunState.Rng.CombatCardSelection.NextItem(enemies));
     }
 }
 

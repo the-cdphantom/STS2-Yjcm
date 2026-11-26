@@ -110,7 +110,7 @@ public sealed class GaoDaYiHaoCanHun : ModRelicTemplate
                 }
 
                 var excess = hand.Count - HandSize;
-                var selected = (await CardSelectCmd.FromHand(
+                var selected = (await CardSelectCmd.FromHandForDiscard(
                     choiceContext,
                     Owner,
                     new CardSelectorPrefs(SelectDiscardPrompt, excess, excess)

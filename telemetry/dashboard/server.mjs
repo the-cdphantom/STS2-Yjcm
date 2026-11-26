@@ -24,7 +24,7 @@ async function loadConfig() {
   try {
     config = JSON.parse(await readFile(configPath, "utf8"));
   } catch {
-    throw new Error("尚未配置仪表盘。请先运行 npm.cmd run dashboard:setup");
+    throw new Error("尚未配置仪表盘。请双击遥测仪表盘启动器，或运行 node dashboard/setup.mjs");
   }
   const url = new URL(config.host);
   if (url.protocol !== "https:") throw new Error("配置中的 PostHog 地址必须使用 HTTPS");
@@ -35,10 +35,10 @@ async function loadConfig() {
 
 async function loadCardNames() {
   const candidates = [
-    join(dashboardDir, "..", "..", "正式版", "Yjcm", "localization", "zhs", "cards.json"),
-    join(dashboardDir, "..", "..", "wuzhugeliang", "Yjcm", "localization", "zhs", "cards.json"),
-    join(dashboardDir, "..", "..", "威董卓开发", "YjcmCode", "Cards", "localization", "zhs", "cards.json"),
-    join(dashboardDir, "..", "..", "威董卓开发", "YjcmCode", "NewCards", "localization", "zhs", "cards.json"),
+    join(dashboardDir, "..", "..", "mod", "Yjcm", "localization", "zhs", "cards.json"),
+    ...["cards", "wei-design-cards", "wei-simple-cards", "wei-cycle-cards",
+      "wei-cao-zhang-cards", "wei-gui-xin-cards", "wei-reinforcement-cards"].map(name =>
+      join(dashboardDir, "..", "..", "mod", "Experimental", "WeiCaoCao", "localization", name + ".json")),
   ];
   const names = {};
   for (const file of candidates) {
@@ -50,7 +50,7 @@ async function loadCardNames() {
         }
       }
     } catch {
-      // 尝试下一套版本的本地化文件。
+      // Some development localization files may be absent in a source checkout.
     }
   }
   return names;
@@ -112,6 +112,11 @@ const server = createServer(async (request, response) => {
       sendJson(response, 405, { error: "只允许 GET 请求" });
       return;
     }
+    if (requestUrl.pathname === "/health") {
+      response.writeHead(200, { "Content-Type": "text/plain", "Cache-Control": "no-store" });
+      response.end("yjcm-telemetry-dashboard\n");
+      return;
+    }
     if (requestUrl.pathname === "/api/dashboard") {
       const rawDays = Number(requestUrl.searchParams.get("days") ?? 30);
       const days = [0, 7, 30, 90, 365].includes(rawDays) ? rawDays : 30;
@@ -127,12 +132,24 @@ const server = createServer(async (request, response) => {
   }
 });
 
+server.on("error", (error) => {
+  console.error(`无法启动仪表盘（${hostName}:${port}）：${error.code === "EADDRINUSE" ? "端口已被其他程序占用" : error.message}`);
+  process.exitCode = 1;
+});
+
 server.listen(port, hostName, () => {
   const localUrl = `http://${hostName}:${port}`;
   console.log(`一将成名遥测仪表盘已启动：${localUrl}`);
   console.log("按 Ctrl+C 停止；关闭网页不会停止本地服务。\n");
-  if (process.argv.includes("--open")) {
-    const child = spawn("explorer.exe", [localUrl], { detached: true, stdio: "ignore" });
+  if (process.argv.includes("--open") && process.platform === "win32") {
+    const child = spawn(process.env.ComSpec || "cmd.exe", ["/d", "/c", `start "" ${localUrl}`], {
+      windowsVerbatimArguments: true,
+      detached: true,
+      stdio: "ignore",
+    });
+    const showManualUrl = () => console.error(`浏览器未能自动打开，请手动访问 ${localUrl}`);
+    child.on("error", showManualUrl);
+    child.on("exit", (code) => { if (code !== 0) showManualUrl(); });
     child.unref();
   }
 });

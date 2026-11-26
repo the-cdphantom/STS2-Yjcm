@@ -1,0 +1,9 @@
+{
+  "YJCM_POWER_WEI_CAO_CAO_JUN_HE_POWER.title": "军合",
+  "YJCM_POWER_WEI_CAO_CAO_JUN_HE_POWER.description": "威曹操的特殊资源。带有军合效果的牌会自动消耗军合来强化效果。军合跨回合保留，战斗结束清空。",
+  "YJCM_POWER_WEI_CAO_CAO_JUN_HE_POWER.smartDescription": "威曹操的特殊资源。带有军合效果的牌会自动消耗军合来强化效果。军合跨回合保留，战斗结束清空。",
+  "YJCM_POWER_WEI_CAO_CAO_WEN_LAN.title": "文澜",
+  "YJCM_POWER_WEI_CAO_CAO_WEN_LAN.description": "每使用2张牌后，若它们都是包含相同牌名的赋牌，将它们所含的不同牌各1张加入手牌并附魔赋；否则，你可以选择任意张手牌附魔赋，已有赋的牌刷新牌名。",
+  "YJCM_POWER_WEI_CAO_CAO_WEN_LAN.smartDescription": "每使用2张牌后，若它们都是包含相同牌名的赋牌，将它们所含的不同牌各1张加入手牌并附魔赋；否则，你可以选择任意张手牌附魔赋，已有赋的牌刷新牌名。",
+  "YJCM_POWER_WEI_CAO_CAO_WEN_LAN.select_prompt": "选择任意张手牌附魔赋（可跳过，已有赋会刷新牌名）"
+}

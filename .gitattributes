@@ -3,6 +3,7 @@
 *.json text eol=lf
 *.mjs text eol=lf
 *.ps1 text eol=lf
+telemetry/*.cmd text eol=crlf
 *.md text eol=lf
 *.tscn text eol=lf
 *.tres text eol=lf

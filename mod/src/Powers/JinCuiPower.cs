@@ -189,4 +189,17 @@ public sealed class JinCuiPower : ModPowerTemplate
     public static readonly string TriggerVoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(JinCuiPower).Assembly.Location)!,
         "Voice", "Bank", "Assets", "jin_cui_buff.wav");
+
+    public override async Task AfterPlayerTurnStartLate(PlayerChoiceContext choiceContext, Player player)
+    {
+        if (player.Creature != Owner || Owner.IsDead || player.PlayerCombatState is not { } state)
+            return;
+
+        int draw = 7 - PileType.Hand.GetPile(player).Cards.Count;
+        if (draw > 0)
+            await CardPileCmd.Draw(choiceContext, draw, player, false);
+
+        if (state.Energy < 7 && !Owner.IsDead && !CombatManager.Instance.IsOverOrEnding)
+            state.Energy = 7;
+    }
 }

@@ -30,7 +30,7 @@ public sealed class WoLongZhuGeLiangKanPo : WuZhugeliangCard
     protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
         [HoverTipFactory.FromPower<ArtifactPower>(), HoverTipFactory.FromPower<XingPower>()];
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar(StarKey, 1m)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new BlockVar(10, ValueProp.Move), new DynamicVar(StarKey, 1m)];
 
     public override bool GainsBlock => true;
 
@@ -45,16 +45,17 @@ public sealed class WoLongZhuGeLiangKanPo : WuZhugeliangCard
         // 获得1层人工制品（抵消一次debuff）
         await PowerCmd.Apply<ArtifactPower>(choiceContext, Owner.Creature, 1, Owner.Creature, this, false);
 
-        await CreatureCmd.GainBlock(Owner.Creature, 6, ValueProp.Move, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
 
         // 获得星（1→2）
         var stars = (int)DynamicVars[StarKey].BaseValue;
         await XingPower.Gain(choiceContext, Owner.Creature, stars, Owner.Creature, this);
     }
 
-    /// <summary>升级：星 1颗→2颗</summary>
+    /// <summary>升级：格挡 10→15，星 1颗→2颗。</summary>
     protected override void OnUpgrade()
     {
+        DynamicVars.Block.UpgradeValueBy(5);
         DynamicVars[StarKey].UpgradeValueBy(1);
     }
 }

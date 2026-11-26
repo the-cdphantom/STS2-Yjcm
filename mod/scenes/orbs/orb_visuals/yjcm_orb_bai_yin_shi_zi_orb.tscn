@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://Yjcm/Images/Powers/bai_yin_shi_zi.png" id="1_icon"]
+[ext_resource type="SpineSkeletonDataResource" path="res://animations/ui/combat/orbs/lightning_orb_skel_data.tres" id="2_spine"]
+
+[node name="BaiYinShiZiOrbVisual" type="Node2D"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+texture = ExtResource("1_icon")
+scale = Vector2(0.300781, 0.300781)
+
+[node name="SpineSkeleton" type="SpineSprite" parent="."]
+visible = false
+skeleton_data_res = ExtResource("2_spine")
+preview_skin = "Default"
+preview_animation = "idle_loop"
+preview_frame = false
+preview_time = 0.0

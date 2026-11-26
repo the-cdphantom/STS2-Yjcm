@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Relics;
 using MegaCrit.Sts2.Core.Factories;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.RelicPools;
+using MegaCrit.Sts2.Core.Runs;
 using STS2RitsuLib.Content;
 
 namespace Yjcm;
@@ -31,15 +32,35 @@ public static class SharedRelicScopePatch
 
         // 使用 RitsuLib 官方注册表限定本 Mod 的共享池内容，不猜测 ID 或影响其他 Mod。
         // 每次抽取取一次快照，避免提前缓存空池；同次候选检查不重复查询注册表。
-        var sharedRelicTypes = ModContentRegistry
-            .GetRegisteredModelsInPool(MainFile.ModId, typeof(SharedRelicPool))
-            .ToHashSet();
-        filter = FilterCandidates(filter, sharedRelicTypes);
+        filter = FilterCandidates(filter, GetSharedRelicTypes());
     }
+
+    internal static IReadOnlySet<Type> GetSharedRelicTypes() => ModContentRegistry
+        .GetRegisteredModelsInPool(MainFile.ModId, typeof(SharedRelicPool))
+        .ToHashSet();
 
     internal static Func<RelicModel, bool> FilterCandidates(
         Func<RelicModel, bool> originalFilter, IReadOnlySet<Type> sharedRelicTypes) =>
         relic => originalFilter(relic) &&
             !(sharedRelicTypes.Contains(relic.GetType()) &&
               relic.Rarity is RelicRarity.Common or RelicRarity.Uncommon or RelicRarity.Rare or RelicRarity.Shop);
+}
+
+[HarmonyPatch(typeof(RelicGrabBag), nameof(RelicGrabBag.PullFromFront),
+    typeof(RelicRarity), typeof(Func<RelicModel, bool>), typeof(IRunState))]
+internal static class SharedTreasureRelicScopePatch
+{
+    private static void Prefix(RelicGrabBag __instance, ref Func<RelicModel, bool> filter, IRunState runState)
+    {
+        if (!ReferenceEquals(__instance, runState.SharedRelicGrabBag))
+            return;
+
+        // Chest relics can go to any teammate through voting or consolation prizes.
+        string scope = WuZhugeliangSettings.SharedRelicScope;
+        if (runState.Players.All(player =>
+            WuZhugeliangSettings.MatchesCharacterScope(scope, player.Character.GetType())))
+            return;
+
+        filter = SharedRelicScopePatch.FilterCandidates(filter, SharedRelicScopePatch.GetSharedRelicTypes());
+    }
 }

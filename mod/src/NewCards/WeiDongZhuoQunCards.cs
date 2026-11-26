@@ -126,7 +126,7 @@ public sealed class WeiDongZhuoWeiLvBuBaGuan : WeiDongZhuoQunCard
         var hand = PileType.Hand.GetPile(Owner);
         int max = hand.Cards.Count;
         if (max <= 0) return;
-        var selected = (await CardSelectCmd.FromHand(context, Owner,
+        var selected = (await CardSelectCmd.FromHandForDiscard(context, Owner,
             WeiDongZhuoQunEffects.Prefs("YJCM_CARD_BA_GUAN.select_prompt", 0, max),
             _ => true, this)).ToList();
         if (selected.Count == 0) return;
@@ -243,7 +243,7 @@ public sealed class WeiDongZhuoXingDongZhuoWeiLin : WeiDongZhuoQunCard
     {
         WeiDongZhuoQunEffects.PlayVoice("wei_lin.wav");
         bool stronger = play.Target!.CurrentHp < Owner.Creature.CurrentHp;
-        if (stronger) await CreatureCmd.LoseMaxHp(context, Owner.Creature, 1, true);
+        if (stronger) await YjcmCreatureCompat.LoseMaxHp(context, Owner.Creature, 1, this);
         var attack = await WeiDongZhuoQunEffects.Attack(this, play,
             DynamicVars.Damage.BaseValue * (stronger ? 2 : 1)).Targeting(play.Target).Execute(context);
         if (attack.Results.SelectMany(x => x).Any(r => r.WasTargetKilled))
@@ -370,7 +370,7 @@ public sealed class WeiDongZhuoNiuFuXiaoXi : WeiDongZhuoQunCard
     protected override async Task OnPlay(PlayerChoiceContext context, CardPlay play)
     {
         WeiDongZhuoQunEffects.PlayVoice("xiao_xi.wav");
-        await CreatureCmd.LoseMaxHp(context, Owner.Creature, 2, true);
+        await YjcmCreatureCompat.LoseMaxHp(context, Owner.Creature, 2, this);
         await WeiDongZhuoQunEffects.Attack(this, play, DynamicVars.Damage.BaseValue)
             .WithHitCount(DynamicVars["Hits"].IntValue).Targeting(play.Target!).Execute(context);
     }
@@ -450,7 +450,7 @@ public sealed class WeiDongZhuoXingYuanShaoJiaoWang : WeiDongZhuoQunCard
     protected override async Task OnPlay(PlayerChoiceContext context, CardPlay play)
     {
         WeiDongZhuoQunEffects.PlayVoice("jiao_wang.wav");
-        await CreatureCmd.LoseMaxHp(context, Owner.Creature, 2, true);
+        await YjcmCreatureCompat.LoseMaxHp(context, Owner.Creature, 2, this);
         await WeiDongZhuoQunEffects.Attack(this, play, DynamicVars.Damage.BaseValue)
             .TargetingAllOpponents(CombatState).Execute(context);
     }
@@ -707,13 +707,15 @@ public sealed class WeiDongZhuoYuanTanYuanShangYuanXiNeiFa : WeiDongZhuoQunCard
         await CardCmd.Discard(context, discarded);
         if (discarded.Type == CardType.Attack)
         {
+            int freePlays = NeiFaPower.CountBlockedCards(hand.Cards, CardType.Skill);
             var p = await PowerCmd.Apply<NeiFaPower>(context, Owner.Creature, 1, Owner.Creature, this, false);
-            if (p != null) p.Configure(CardType.Skill, CardType.Attack);
+            if (p != null) p.Configure(CardType.Skill, CardType.Attack, freePlays);
         }
         else if (discarded.Type == CardType.Skill)
         {
+            int freePlays = NeiFaPower.CountBlockedCards(hand.Cards, CardType.Attack);
             var p = await PowerCmd.Apply<NeiFaPower>(context, Owner.Creature, 1, Owner.Creature, this, false);
-            if (p != null) p.Configure(CardType.Attack, CardType.Skill);
+            if (p != null) p.Configure(CardType.Attack, CardType.Skill, freePlays);
         }
     }
     protected override void OnUpgrade() => EnergyCost.UpgradeBy(-1);

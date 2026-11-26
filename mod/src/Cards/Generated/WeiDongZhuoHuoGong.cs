@@ -37,7 +37,7 @@ public sealed class WeiDongZhuoHuoGong : WeiDongZhuoCard
         var stacks = (int)DynamicVars[StacksKey].BaseValue;
         await PowerCmd.Apply<HuoGongPower>(choiceContext, cardPlay.Target!, stacks, Owner.Creature, this, false);
 
-        var selected = await CardSelectCmd.FromHand(
+        var selected = await CardSelectCmd.FromHandForDiscard(
             choiceContext, Owner,
             new CardSelectorPrefs(CardSelectorPrefs.DiscardSelectionPrompt, 1),
             card => card != this, this);

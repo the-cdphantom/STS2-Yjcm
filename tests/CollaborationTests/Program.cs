@@ -86,4 +86,14 @@ await SunqianCases.Run(assembly, Path.GetDirectoryName(Path.GetFullPath(args[0])
 FirePreviewCases.Run(assembly, Check);
 await LampEnergyCases.Run(Check);
 PlayerSkinCases.Run(assembly, Check);
+ModEventRepeatScopeCases.Run(assembly, Check);
+ModEventScopeCases.Run(assembly, Check);
+OptionCardGenerationCases.Run(assembly, Check);
+await QingShiDamageCases.Run(assembly, Check);
+SharedTreasureRelicCases.Run(assembly, Check);
+await NeiFaCases.Run(assembly, Path.GetFullPath(args[1]), Check);
+await AncestorDriftCases.Run(assembly, Path.GetFullPath(args[1]), Check);
+EnergyDescriptionCases.Run(assembly, Path.GetFullPath(args[1]), Check);
+await TanBanCases.Run(assembly, Check);
+await DiscardSelectionCases.Run(assembly, Check);
 Console.WriteLine($"COLLABORATION_HARMONY_OK runtime={Environment.Version} assertions={checks}");

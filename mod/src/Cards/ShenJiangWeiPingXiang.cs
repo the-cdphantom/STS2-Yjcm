@@ -39,7 +39,7 @@ public sealed class ShenJiangWeiPingXiang : WuZhugeliangCard
         VoicePlayer.PlayWav(VoicePath);
 
         // 失去9点体力上限
-        await CreatureCmd.LoseMaxHp(choiceContext, Owner.Creature, 9, true);
+        await YjcmCreatureCompat.LoseMaxHp(choiceContext, Owner.Creature, 9, this);
 
         // 收集所有攻击牌（不限费用）
         var allCards = ModelDb.AllCards

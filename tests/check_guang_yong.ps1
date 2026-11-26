@@ -2,9 +2,9 @@ param([ValidateSet('stable','beta')][string]$Variant)
 $ErrorActionPreference='Stop'
 $dev=Split-Path $PSScriptRoot -Parent
 $root=$dev
-$version=if($Variant -eq 'stable') {'0.107.1'} else {'0.111.0'}
+$version=if($Variant -eq 'stable') {'0.111.0'} else {'0.114.0'}
 $deps=Join-Path $root "dependencies\$Variant-$version"
-foreach($file in @('GodotSharp.dll','0Harmony.dll','sts2.dll','STS2-RitsuLib.dll')) {
+foreach($file in @('GodotSharp.dll','0Harmony.dll','sts2.dll','STS2-RitsuLib.dll','STS2-RitsuLib.Shared.dll','STS2-RitsuLib.Ui.dll','STS2-RitsuLib.Settings.dll','STS2-RitsuLib.Runtime.dll')) {
     [void][Reflection.Assembly]::LoadFrom((Join-Path $deps $file))
 }
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $dev "artifacts\staged\Yjcm.$version.dll"))

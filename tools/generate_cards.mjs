@@ -20,7 +20,8 @@ const outputCards = path.join(outputRoot, 'src/Cards');
 const readRaw = p => fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
 const read = p => p.endsWith('.cs') ? selectVariant(readRaw(p), 'stable') : readRaw(p);
 const hash = p => {
-  let data = fs.readFileSync(p);
+  // Git normalizes text to LF in a clean checkout. Match that on Windows too.
+  let data = fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
   // Generated clone localization is an output, not an input. Avoid a self-hash cycle.
   if (/[\\/]Yjcm[\\/]localization[\\/]zhs[\\/](cards|orbs)\.json$/.test(p)) {
     const table = JSON.parse(readRaw(p));
@@ -184,7 +185,7 @@ namespace Yjcm;
 public sealed class WeiDongZhuoCardPool : TypeListCardPoolModel
 {
     public override string Title => "weidongzhuo";
-    public override string EnergyColorName => "ironclad";
+    public override string EnergyColorName => "yjcm_dongzhuo";
     public override string CardFrameMaterialPath => "card_frame_weidongzhuo";
     public override Color DeckEntryCardColor => new("#B98A31");
     public override Color EnergyOutlineColor => new("#5A3825");
@@ -293,8 +294,8 @@ function scan(dir) {
 for (const folder of ['Powers', 'Patches', 'Relics', 'Orbs', 'Equipment', 'Extensions']) scan(path.join(sourceRoot, `src/${folder}`));
 const snapshot = Object.fromEntries([...sourceFiles].sort().map(p => [path.relative(workspace, p).replaceAll('\\', '/'), hash(p)]));
 const manifest = { scope: '群雄+神武将+全部通用基础牌/锦囊/装备；神标签优先，其他魏蜀吴专属及其 tokens 排除',
-  variant: 'both', gameApi: ['0.107.1', '0.111.0'],
-  mainNamespace: 'Yjcm', frame: 'card_frame_weidongzhuo', energyColor: 'ironclad',
+  variant: 'both', gameApi: ['0.111.0', '0.114.0'],
+  mainNamespace: 'Yjcm', frame: 'card_frame_weidongzhuo', energyColor: 'yjcm_dongzhuo',
   primaryColor: '#B98A31', darkColor: '#5A3825', groups, cards: metadata, classification, externalReferences,
   inputHashes: snapshot, additionalModel: 'WeiDongZhuoZhangBaSheMaoOrb',
   localizationCounts: { cards: Object.keys(copiedCardsLoc).length, orbs: Object.keys(copiedOrbsLoc).length },
@@ -303,7 +304,7 @@ emit(`${cardDir}copy-manifest.json`, JSON.stringify(manifest, null, 2));
 
 emit(`${cardDir}分类清单.md`, `# 威董卓复制卡分类清单
 
-目标 API：0.107.1 stable 与 0.111.0 beta，未编译。依据统一源码 CanonicalTags（不把悬浮提示、效果中的 tag 查询误当作本卡 tag）。神标签优先保留；当前群 tag 武将数量为 ${groups.general.filter(n => cards.get(n).tags.includes('Qun')).length}。
+目标 API：0.111.0 stable 与 0.114.0 beta，未编译。依据统一源码 CanonicalTags（不把悬浮提示、效果中的 tag 查询误当作本卡 tag）。神标签优先保留；当前群 tag 武将数量为 ${groups.general.filter(n => cards.get(n).tags.includes('Qun')).length}。
 
 共 ${names.length} 张独立类型：${groups.general.length} 张神将主牌、${names.length - groups.general.length - groups.token.length} 张通用牌、${groups.token.length} 张转换/生成/选择 token。另附 1 个专用丈八蛇矛装备球。
 

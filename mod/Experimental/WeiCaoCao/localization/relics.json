@@ -1,0 +1,9 @@
+{
+  "YJCM_RELIC_WEI_CAO_CAO_JUN_HE.title": "军合",
+  "YJCM_RELIC_WEI_CAO_CAO_JUN_HE.description": "每回合开始时，你可以选择1张手牌，获得手牌中与其同类型牌数量+1的[gold]军合[/gold]。",
+  "YJCM_RELIC_WEI_CAO_CAO_JUN_HE.flavor": "聚兵如铁，方能碎尽敌胆",
+  "YJCM_RELIC_WEI_CAO_CAO_JUN_HE.select_prompt": "选择1张手牌，按同类型手牌数量+1获得军合（可跳过）",
+  "YJCM_RELIC_WEI_CAO_CAO_JIE_JUN_HE.title": "界军合",
+  "YJCM_RELIC_WEI_CAO_CAO_JIE_JUN_HE.description": "每回合开始时，你可以选择1张手牌，获得手牌中与其同类型牌数量+1的[gold]军合[/gold]。每回合首次消耗[gold]军合[/gold]后，获得{energyPrefix:energyIcons(1)}并摸1张牌。",
+  "YJCM_RELIC_WEI_CAO_CAO_JIE_JUN_HE.flavor": "万众一口，可吞千里之国"
+}

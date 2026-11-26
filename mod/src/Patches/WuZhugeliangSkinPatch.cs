@@ -129,7 +129,11 @@ internal static class WuZhugeliangSkinVisuals
 }
 
 /// <summary>在人物选择页显示可操作的皮肤切换栏，并即时替换预览。</summary>
-[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter))]
+#if GAME_V0113
+[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter), [typeof(NCharacterSelectButton)])]
+#else
+[HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen.SelectCharacter), [typeof(NCharacterSelectButton), typeof(CharacterModel)])]
+#endif
 internal static class WuZhugeliangSkinSelectPatch
 {
     private const string SelectorName = "WuZhugeliangSkinSelector";
@@ -137,8 +141,15 @@ internal static class WuZhugeliangSkinSelectPatch
         ?? throw new MissingFieldException(typeof(NCharacterSelectScreen).FullName, "_bgContainer");
 
     [HarmonyPostfix]
-    private static void Postfix(NCharacterSelectScreen __instance, CharacterModel characterModel)
+#if GAME_V0113
+    private static void Postfix(NCharacterSelectScreen __instance, NCharacterSelectButton __0)
     {
+        CharacterModel? characterModel = __0.IsRandom || __0.IsLocked ? null : __0.Character;
+#else
+    private static void Postfix(NCharacterSelectScreen __instance, CharacterModel __1)
+    {
+        CharacterModel? characterModel = __1;
+#endif
         bool isWuZhugeliang = characterModel is WuZhugeliang;
         PanelContainer? selector = __instance.GetNodeOrNull<PanelContainer>(SelectorName);
         if (!isWuZhugeliang)
@@ -150,6 +161,8 @@ internal static class WuZhugeliangSkinSelectPatch
         selector ??= CreateSelector(__instance);
         selector.Visible = true;
         UpdateSelectorText(selector);
+        SkinSelectDescription.Refresh(__instance, characterModel!, WuZhugeliangSettings.UseMouZhugeliangSkin,
+            "YJCM_CHARACTER_WU_ZHUGELIANG.mou_description");
 #if GAME_BETA
         if (WuZhugeliangSettings.UseMouZhugeliangSkin) ReplacePreview(__instance, true);
 #else
@@ -222,6 +235,8 @@ internal static class WuZhugeliangSkinSelectPatch
             WuZhugeliangSettings.SetWuZhugeliangSkin(useMouSkin);
             UpdateSelectorText(panel);
             ReplacePreview(screen, useMouSkin);
+            SkinSelectDescription.Refresh(screen, ModelDb.Character<WuZhugeliang>(), useMouSkin,
+                "YJCM_CHARACTER_WU_ZHUGELIANG.mou_description");
             PlayerSkins.PublishLocalChange();
             WuZhugeliang.PlayCurrentSkinSelectVoice();
             MainFile.Logger.Info($"武诸葛亮人物选择皮肤已切换为：{(useMouSkin ? "谋诸葛亮" : "武诸葛亮")}");

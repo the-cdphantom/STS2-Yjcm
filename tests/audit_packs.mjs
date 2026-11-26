@@ -30,6 +30,16 @@ const purePath = path.join(root, 'artifacts/migration/base.pck');
 const hasLegacyBaseline = fs.existsSync(purePath);
 const pure = hasLegacyBaseline ? readPack(purePath) : new Map();
 const test = readPack(path.join(root, 'artifacts/dist/yjcm/Yjcm.pck'));
+// The user's B is the middle card in the ABC comparison. Its exported files
+// are in v2_meiwu_qiongku; directory display names differ from the final labels.
+const dongZhuoBHashes={"card_frame_attack_weidongzhuo_s.png":"9e9d39fc4d9f494e500bd81495e271e2c8b80ad115657de32c38e4f3e2645291","card_frame_power_weidongzhuo_s.png":"3c1d5dc9c8305591f58b28753ed60ba718d7f7de86d95a4b1226961a68715b51","card_frame_skill_weidongzhuo_s.png":"2e27e15f1a267be86e1bfb255348e78691f263bf2a3d1f4d8c19c5c96907bd2c","qun_badge.png":"8268b9f45010226630a283b5c21dfadbf6ec9be67dde990fb4e9ce9bce23866e"};
+for (const [file,hash] of Object.entries(dongZhuoBHashes)) {
+  const relative='Yjcm/Images/CardFrames/WesternDesertB/'+file;
+  assert(test.has(relative)||test.has(relative+'.import'),'Missing approved DongZhuo B artwork: '+relative);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'mod',relative))).digest('hex'),hash,'DongZhuo frame differs from approved B: '+file);
+}
+for (const name of ['Experimental/WeiCaoCao/select_bg.tscn', 'Experimental/WeiCaoCao/creature.tscn'])
+  assert(test.has(name), `Release is missing Cao Cao resource: ${name}`);
 for (const folder of ['WeiDongZhuo','MouZhugeliang']) {
   const retired=`Spine/${folder}/Combat/character_attack.skel`;
   for (const base of ['assets/loose','artifacts/dist/yjcm'])
@@ -210,7 +220,7 @@ for (const name of [
   'zhui_tao', 'yu_xi', 'xiao_xi', 'xiong_huo', 'sha_jue', 'duan_ti',
   'xiao_yan', 'fu_xi', 'wang_yue', 'zuo_jun', 'xian_shuai', 'shu_guo',
   'xiong_suan', 'nei_fa', 'dou_wei', 'fu_mou_yang', 'fu_mou_yin',
-  'qu_xian', 'su_shen', 'ru_shi', 'lian_jie', 'jiang_xian', 'huo_shao_luo_yang'
+  'qu_xian', 'su_shen', 'ru_shi', 'lian_jie', 'jiang_xian', 'huo_shao_luo_yang', 'zu_yin', 'piao_ping'
 ]) {
   assert(test.has(`WeiDongZhuo/images/${name}.png`), `Card art missing: ${name}`);
   assert(test.has(`WeiDongZhuo/images/${name}.png.import`), `Card art import missing: ${name}`);
@@ -236,10 +246,25 @@ for (const key of [
   'YUAN_TAN_YUAN_SHANG_YUAN_XI_NEI_FA', 'MOU_DONG_CHENG_DOU_WEI',
   'MOU_JIA_XU_FU_MOU_YANG', 'MOU_JIA_XU_FU_MOU_YIN', 'MOU_JIA_XU_SU_SHEN',
   'MOU_JIA_XU_RU_SHI', 'WU_HUANG_FU_SONG_LIAN_JIE', 'WU_HUANG_FU_SONG_JIANG_XIAN',
-  'DONG_ZHUO_HUO_SHAO_LUO_YANG'
+  'DONG_ZHUO_HUO_SHAO_LUO_YANG', 'ZHU_GE_JING_ZU_YIN', 'QIN_YI_LU_PIAO_PING'
 ])
   assert(cards[`YJCM_CARD_${key}.title`], `Card localization missing: ${key}`);
 const powers = JSON.parse(test.get('Yjcm/localization/zhs/powers.json').toString('utf8'));
+for (const voice of ['zu_yin', 'piao_ping']) {
+  const relative = `Voice/WeiDongZhuo/${voice}.wav`;
+  const wav = fs.readFileSync(path.join(root, 'assets/loose', relative));
+  assert.equal(wav.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(wav.toString('ascii', 8, 12), 'WAVE');
+  assert(wav.equals(fs.readFileSync(path.join(root, 'artifacts/dist/yjcm', relative))), `New Dongzhuo voice delivery mismatch: ${voice}`);
+}
+assert.equal(powers['YJCM_POWER_PIAO_PING.title'], '漂萍');
+assert(powers['YJCM_POWER_PIAO_PING.active_description'].includes('{DiscardNext:cond:弃|摸}{Count}'));
+assert.equal(cards['YJCM_CARD_YUAN_TAN_YUAN_SHANG_YUAN_XI_NEI_FA.description'],
+  '摸3张牌，然后弃置1张。\n弃置攻击牌：本回合不能使用技能牌，接下来的若干张攻击牌免费，张数等于弃牌后手中的技能牌数量；弃置技能牌则相反。',
+  'Packaged NeiFa must use the approved limited-use description without X');
+assert.equal(powers['YJCM_POWER_NEI_FA.active_description'],
+  '本回合不能使用{BlocksSkills:cond:技能牌|攻击牌}，接下来的{Remaining}张{BlocksSkills:cond:攻击牌|技能牌}免费。',
+  'Packaged NeiFa must show its actual remaining free uses');
 const events = JSON.parse(test.get('Yjcm/localization/zhs/events.json').toString('utf8'));
 const ancients = JSON.parse(test.get('Yjcm/localization/zhs/ancients.json').toString('utf8'));
 for (const ancient of ['DARV', 'NEOW', 'NONUPEIPE', 'OROBAS', 'PAEL', 'TANX', 'TEZCATARA', 'VAKUU'])

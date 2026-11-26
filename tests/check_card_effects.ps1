@@ -2,8 +2,8 @@ param([ValidateSet('stable','beta')][string]$Variant)
 $ErrorActionPreference='Stop'
 $workspace=Split-Path $PSScriptRoot -Parent
 $dev=Split-Path $PSScriptRoot -Parent
-$version=if($Variant -eq 'stable') {'0.107.1'} else {'0.111.0'}
-foreach($name in @('GodotSharp','0Harmony','sts2','STS2-RitsuLib')) {
+$version=if($Variant -eq 'stable') {'0.111.0'} else {'0.114.0'}
+foreach($name in @('GodotSharp','0Harmony','sts2','STS2-RitsuLib','STS2-RitsuLib.Shared','STS2-RitsuLib.Ui','STS2-RitsuLib.Settings','STS2-RitsuLib.Runtime')) {
     [void][Reflection.Assembly]::LoadFrom((Join-Path $workspace "dependencies\$Variant-$version\$name.dll"))
 }
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $dev "artifacts\staged\Yjcm.$version.dll"))
@@ -15,7 +15,7 @@ $mapping=$type.GetField('CardFolders',$static).GetValue($null)
 $script:checks=0
 function Assert-Effect($value,$description) { if(!$value) {throw $description}; $script:checks++ }
 $catalog=Get-Content -LiteralPath (Join-Path $dev 'assets\loose\Spine\CardEffects\index.json') -Raw | ConvertFrom-Json
-Assert-Effect ($catalog.Count -eq 17) 'Expected 17 effect bundles'
+Assert-Effect ($catalog.Count -eq 18) 'Expected 18 effect bundles'
 foreach($entry in $mapping.GetEnumerator()) {
     $model=$assembly.GetType("Yjcm.$($entry.Key)",$false)
     if(!$model) {$model=$assembly.GetType("Yjcm.WeiDongZhuo$($entry.Key)",$true)}
@@ -32,9 +32,10 @@ foreach($entry in $mapping.GetEnumerator()) {
 Assert-Effect ($null -eq $resolve.Invoke($null,@('LieCangOption1',[MegaCrit.Sts2.Core.Entities.Cards.CardType]::Skill))) 'Option card must not trigger'
 Assert-Effect ($null -eq $resolve.Invoke($null,@('Sha',[MegaCrit.Sts2.Core.Entities.Cards.CardType]::Attack))) 'Unmapped card must not trigger'
 Assert-Effect ($null -eq $resolve.Invoke($null,@('ChenShiQingBei',[MegaCrit.Sts2.Core.Entities.Cards.CardType]::Status))) 'Status card must not trigger'
+Assert-Effect ($resolve.Invoke($null,@('WeiDongZhuoZhuGeJingZuYin',[MegaCrit.Sts2.Core.Entities.Cards.CardType]::Attack)).Item2 -eq 'gongji') 'ZuYin must use the supplied attack animation'
 Assert-Effect ($null -ne [MegaCrit.Sts2.Core.Combat.History.CombatHistory].GetMethod('CardPlayStarted')) 'Native history hook changed'
 foreach($viewport in @(@(1920,1080),@(2560,1080),@(1080,1920))) {
-    foreach($folder in @('谋贾诩阳和肃身','谋贾诩阴和入世','神赵云')) {
+    foreach($folder in @('谋贾诩阳和肃身','谋贾诩阴和入世','谋郭嘉阳','谋郭嘉阴','神赵云')) {
         $w=[single]1563.445; $h=[single]1037.271
         $scale=$scaleMethod.Invoke($null,@($folder,[single]$viewport[0],[single]$viewport[1],$w,$h))
         $expected=if($folder -eq '神赵云') {

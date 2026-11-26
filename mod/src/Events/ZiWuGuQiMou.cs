@@ -29,9 +29,13 @@ public sealed class ZiWuGuQiMou : ModEventTemplate
 
     public override EventAssetProfile AssetProfile => new(InitialPortraitPath: PortraitPath);
 
-    // 共享事件在队伍中有谋诸葛亮时才会加入可出现事件池。
+    // 共享事件在队伍中有谋诸葛亮时才会加入可出现事件池；同时受随机事件范围设置约束。
     public override bool IsAllowed(IRunState runState) =>
-        runState.Players.Any(player => player.Character is WuZhugeliang);
+        IsAllowedForScope(runState, WuZhugeliangSettings.ModEventScope);
+
+    internal static bool IsAllowedForScope(IRunState runState, string scope) =>
+        WuZhugeliangSettings.MatchesAnyPlayerScope(runState, scope)
+        && runState.Players.Any(player => player.Character is WuZhugeliang);
 
     protected override Task BeforeEventStarted(bool isPreFinished)
     {

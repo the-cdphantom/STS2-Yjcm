@@ -4,6 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);GAME_BETA</DefineConstants>
+    <DefineConstants Condition="'$(Variant)' == 'beta'">$(DefineConstants);GAME_V0113</DefineConstants>
+    <DefineConstants Condition="'$(Variant)' == 'beta'">$(DefineConstants);GAME_V0114</DefineConstants>
   </PropertyGroup>
   <Import Project="../../dependencies/GameReferences.props" />
 </Project>

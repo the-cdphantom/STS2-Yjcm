@@ -29,11 +29,7 @@ public sealed class WeiDongZhuoSha : WeiDongZhuoCard
     {
         VoicePlayer.PlayWav(VoicePath);
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
-#if GAME_BETA
             .FromCard(this, cardPlay).Targeting(cardPlay.Target!).Execute(choiceContext);
-#else
-            .FromCard(this).Targeting(cardPlay.Target!).Execute(choiceContext);
-#endif
     }
 
     protected override void OnUpgrade()

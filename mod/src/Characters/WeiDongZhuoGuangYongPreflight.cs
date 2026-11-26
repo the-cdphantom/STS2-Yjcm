@@ -133,12 +133,8 @@ internal static class WeiDongZhuoGuangYongPreflight
         foreach (var enemy in enemies) Raw(typeof(StrengthPower), enemy, 3);
         var randomCard = state.CreateCard<SwordBoomerang>(player);
         var randomPlay = Play(randomCard, null);
-#if GAME_BETA
         var prediction = new Rng(run.Rng.CombatTargets.ToSerializable());
         var expectedFirst = prediction.NextItem(state.HittableEnemies);
-#else
-        Creature? expectedFirst = null;
-#endif
         var scope = typeof(WeiDongZhuoRandomTargetScope);
         object?[] arguments = [randomCard, context, null];
         AccessTools.Method(scope, "Prefix").Invoke(null, arguments);
@@ -146,9 +142,6 @@ internal static class WeiDongZhuoGuangYongPreflight
         {
             Require(WeiDongZhuoRandomTargetScope.ContextFor(randomCard) == context, "original choice context retained");
             await relic.BeforeCardPlayed(randomPlay);
-#if !GAME_BETA
-            expectedFirst = enemies.Single(e => Amount<StrengthPower>(e) == 2);
-#endif
             Require(Amount<StrengthPower>(expectedFirst!) == 2 && Amount<StrengthPower>(self) == 1, "random reserved before damage");
             var attack = DamageCmd.Attack(1);
 #if GAME_BETA

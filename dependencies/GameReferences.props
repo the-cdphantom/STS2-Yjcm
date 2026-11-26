@@ -1,13 +1,16 @@
 <Project>
   <PropertyGroup>
-    <GameDependencyDirectory Condition="'$(GameApiVariant)' == 'stable'">$(MSBuildThisFileDirectory)stable-0.107.1</GameDependencyDirectory>
-    <GameDependencyDirectory Condition="'$(GameApiVariant)' == 'beta'">$(MSBuildThisFileDirectory)beta-0.111.0</GameDependencyDirectory>
+    <GameDependencyDirectory Condition="'$(GameApiVariant)' == 'stable'">$(MSBuildThisFileDirectory)stable-0.111.0</GameDependencyDirectory>
+    <GameDependencyDirectory Condition="'$(GameApiVariant)' == 'beta'">$(MSBuildThisFileDirectory)beta-0.114.0</GameDependencyDirectory>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony"><HintPath>$(GameDependencyDirectory)\0Harmony.dll</HintPath></Reference>
     <Reference Include="sts2"><HintPath>$(GameDependencyDirectory)\sts2.dll</HintPath></Reference>
     <Reference Include="GodotSharp"><HintPath>$(GameDependencyDirectory)\GodotSharp.dll</HintPath></Reference>
     <Reference Include="STS2-RitsuLib"><HintPath>$(GameDependencyDirectory)\STS2-RitsuLib.dll</HintPath></Reference>
+    <Reference Include="STS2-RitsuLib.Runtime;STS2-RitsuLib.Shared;STS2-RitsuLib.Settings;STS2-RitsuLib.Ui">
+      <HintPath>$(GameDependencyDirectory)\%(Identity).dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="RequirePinnedGameDependencies" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="'$(GameApiVariant)' != 'stable' and '$(GameApiVariant)' != 'beta'" Text="GameApiVariant must be stable or beta." />

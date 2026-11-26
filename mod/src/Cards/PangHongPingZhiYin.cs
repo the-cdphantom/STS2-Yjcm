@@ -29,14 +29,13 @@ public sealed class PangHongPingZhiYin : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar(MultiplierKey, 2m)];
 
-    private static bool _autoPlaying;
-
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(PangHongPingZhiYin).Assembly.Location)!,
         "Voice", "Bank", "Assets", "pang_hong_ping_zhi_yin.wav");
 
     public PangHongPingZhiYin()
         : base(1, CardType.Attack, CardRarity.Token, TargetType.AnyEnemy, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     // 为描述中的 [gold]转换技[/gold] 提供悬浮提示
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>
@@ -62,24 +61,7 @@ public sealed class PangHongPingZhiYin : CardModel
         await DamageCmd.Attack(damage).FromCard(this).Targeting(target).Execute(choiceContext);
 #endif
 
-        if (!_autoPlaying)
-        {
-            var handPile = PileTypeExtensions.GetPile(PileType.Hand, Owner);
-            if (handPile?.Cards != null)
-            {
-                var atkCards = handPile.Cards.Where(c => c != this && c.Type == CardType.Attack).ToList();
-                if (atkCards.Count > 0)
-                {
-                    var randomCard = Owner.RunState.Rng.CombatCardSelection.NextItem(atkCards);
-                    if (randomCard != null)
-                    {
-                        _autoPlaying = true;
-                        try { await CardCmd.AutoPlay(choiceContext, randomCard, target, AutoPlayType.Default, false, false); }
-                        finally { _autoPlaying = false; }
-                    }
-                }
-            }
-        }
+        await PangHongPingZhiYang.PlaySelectedHandCard(choiceContext, this, CardType.Attack, target);
 
         var yangCard = CombatState.CreateCard<PangHongPingZhiYang>(Owner);
         if (IsUpgraded) yangCard.UpgradeInternal();

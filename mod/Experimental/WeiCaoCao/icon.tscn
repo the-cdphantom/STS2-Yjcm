@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://Experimental/WeiCaoCao/images/avatar.png" id="1"]
+
+[node name="WeiCaoCaoIcon" type="TextureRect"]
+offset_right = 54.0
+offset_bottom = 54.0
+texture = ExtResource("1")
+expand_mode = 2
+stretch_mode = 5
+mouse_filter = 2

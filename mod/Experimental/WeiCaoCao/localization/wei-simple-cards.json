@@ -1,0 +1,19 @@
+{
+  "YJCM_CARD_WEI_CAO_CAO_DESIGN.discard_type": "选择1张牌，弃置该类型的所有手牌",
+  "YJCM_CARD_WEI_CAO_CAO_XING_CAO_REN_DI_FENG.title": "星曹仁-砥锋",
+  "YJCM_CARD_WEI_CAO_CAO_XING_CAO_REN_DI_FENG.description": "造成{Damage:diff()}点伤害。\n[gold]军合[/gold]：获得1层人工制品。",
+  "YJCM_CARD_WEI_CAO_CAO_XING_ZHANG_CHUN_HUA_LIANG_YAN.title": "星张春华-梁燕",
+  "YJCM_CARD_WEI_CAO_CAO_XING_ZHANG_CHUN_HUA_LIANG_YAN.description": "获得{Count}点力量。\n[gold]军合[/gold]：使一名敌人获得{Count}层易伤。",
+  "YJCM_CARD_WEI_CAO_CAO_YAN_ROU_CHOU_TAO.title": "阎柔-仇讨",
+  "YJCM_CARD_WEI_CAO_CAO_YAN_ROU_CHOU_TAO.description": "造成{Damage:diff()}点伤害。你可以弃置1张牌，若弃置了牌，获得{energyPrefix:energyIcons(1)}。",
+  "YJCM_CARD_WEI_CAO_CAO_WU_ZHI_WEI_TI.title": "吴质-伪涕",
+  "YJCM_CARD_WEI_CAO_CAO_WU_ZHI_WEI_TI.description": "选择：弃置所有技能牌，获得等量敏捷；或弃置所有攻击牌，获得等量力量。\n[gold]军合[/gold]：额外获得1点。",
+  "YJCM_CARD_WEI_CAO_CAO_SP_GUAN_YU_NU_CHEN.title": "sp关羽-怒嗔",
+  "YJCM_CARD_WEI_CAO_CAO_SP_GUAN_YU_NU_CHEN.description": "弃置一种类型的所有手牌。每弃置1张，对一名敌人造成{Damage:diff()}点伤害。\n[gold]军合[/gold]：每张改为15点。",
+  "YJCM_CARD_WEI_CAO_CAO_BIAN_XI_DUN_XI.title": "卞喜-钝袭",
+  "YJCM_CARD_WEI_CAO_CAO_BIAN_XI_DUN_XI.description": "对一名角色造成{Damage:diff()}点伤害。若目标是敌人，随机化其意图。",
+  "YJCM_CARD_WEI_CAO_CAO_SHEN_DIAN_WEI_CHE_XIE.title": "神典韦-掣挟",
+  "YJCM_CARD_WEI_CAO_CAO_SHEN_DIAN_WEI_CHE_XIE.description": "从随机3张曹操卡池的攻击牌中选择2张加入手牌，本回合免费打出。\n[gold]军合[/gold]：改为从5张中选择。",
+  "YJCM_CARD_WEI_CAO_CAO_MOU_HUANG_QUAN_QIAO_DUI.title": "谋黄权-巧对",
+  "YJCM_CARD_WEI_CAO_CAO_MOU_HUANG_QUAN_QIAO_DUI.description": "使一名敌人获得2点力量，然后造成{Damage:diff()}点伤害。其每有1点力量，额外攻击一次。"
+}

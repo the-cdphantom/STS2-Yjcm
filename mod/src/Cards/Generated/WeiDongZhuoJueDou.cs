@@ -38,11 +38,7 @@ public sealed class WeiDongZhuoJueDou : WeiDongZhuoCard
         var intentDmg = GetIntentDamage(target);
         var damage = Math.Max(0, baseDmg - intentDmg);
 
-#if GAME_BETA
         await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target).Execute(choiceContext);
-#else
-        await DamageCmd.Attack(damage).FromCard(this).Targeting(target).Execute(choiceContext);
-#endif
     }
 
     // 获取敌人的意图伤害值

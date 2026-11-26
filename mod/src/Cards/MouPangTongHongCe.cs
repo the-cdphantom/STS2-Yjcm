@@ -70,6 +70,7 @@ public sealed class HongCeShangCe : CardModel
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(6m, ValueProp.Move)];
     public HongCeShangCe() : base(0, CardType.Attack, CardRarity.Token, TargetType.AnyEnemy, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
     public override CardPoolModel Pool => ModelDb.CardPool<TokenCardPool>();
     public override string PortraitPath => "hong_ce.png".CardImagePath();
     private static readonly string VoicePath = Path.Combine(Path.GetDirectoryName(typeof(HongCeShangCe).Assembly.Location)!, "Voice", "Bank", "Assets", "hong_ce_shang.wav");
@@ -93,6 +94,7 @@ public sealed class HongCeShangCe : CardModel
 public sealed class HongCeZhongCe : CardModel
 {
     public HongCeZhongCe() : base(0, CardType.Skill, CardRarity.Token, TargetType.Self, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
     public override CardPoolModel Pool => ModelDb.CardPool<TokenCardPool>();
     public override string PortraitPath => "hong_ce.png".CardImagePath();
     private static readonly string VoicePath = Path.Combine(Path.GetDirectoryName(typeof(HongCeZhongCe).Assembly.Location)!, "Voice", "Bank", "Assets", "hong_ce_zhong.wav");
@@ -104,7 +106,7 @@ public sealed class HongCeZhongCe : CardModel
         var discardable = hand?.Cards.Where(card => card != this).ToList() ?? [];
         if (discardable.Count > 0)
         {
-            var selected = await CardSelectCmd.FromHand(choiceContext, Owner,
+            var selected = await CardSelectCmd.FromHandForDiscard(choiceContext, Owner,
                 new CardSelectorPrefs(CardSelectorPrefs.DiscardSelectionPrompt, 1),
                 card => card != this, this);
             var discarded = selected.FirstOrDefault();
@@ -141,6 +143,7 @@ public sealed class HongCeZhongCe : CardModel
 public sealed class HongCeXiaCe : CardModel
 {
     public HongCeXiaCe() : base(0, CardType.Skill, CardRarity.Token, TargetType.Self, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
     public override CardPoolModel Pool => ModelDb.CardPool<TokenCardPool>();
     public override string PortraitPath => "hong_ce.png".CardImagePath();
     private static readonly string VoicePath = Path.Combine(Path.GetDirectoryName(typeof(HongCeXiaCe).Assembly.Location)!, "Voice", "Bank", "Assets", "hong_ce_xia.wav");

@@ -23,7 +23,6 @@ public sealed class WeiDongZhuoWuSeSha : CardModel
 
     private const string DmgKey = "Dmg";
 
-    
     public override string PortraitPath => "wu_se_sha.png".CardImagePath();
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(DmgKey, 9m, ValueProp.Move)];
@@ -32,6 +31,7 @@ public sealed class WeiDongZhuoWuSeSha : CardModel
 
     public WeiDongZhuoWuSeSha()
         : base(0, CardType.Attack, CardRarity.Token, TargetType.AllEnemies, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
@@ -43,11 +43,7 @@ public sealed class WeiDongZhuoWuSeSha : CardModel
         await ShenCaiJudgmentPower.IncrementJudgments(choiceContext, Owner, this);
 
         await DamageCmd.Attack(DynamicVars[DmgKey].BaseValue)
-#if GAME_BETA
             .FromCard(this, cardPlay).TargetingAllOpponents(CombatState).Execute(choiceContext);
-#else
-            .FromCard(this).TargetingAllOpponents(CombatState).Execute(choiceContext);
-#endif
     }
 
     protected override void OnUpgrade()

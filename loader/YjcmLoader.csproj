@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="sts2">
-      <HintPath>..\dependencies\stable-0.107.1\sts2.dll</HintPath>
+      <HintPath>..\dependencies\stable-0.111.0\sts2.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

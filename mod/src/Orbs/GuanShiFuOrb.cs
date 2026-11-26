@@ -44,7 +44,7 @@ public sealed class GuanShiFuOrb : EquipmentOrbModel
         try
         {
             // 选择弃置2张牌
-            var selected = await CardSelectCmd.FromHand(
+            var selected = await CardSelectCmd.FromHandForDiscard(
                 choiceContext, Owner,
                 new CardSelectorPrefs(CardSelectorPrefs.DiscardSelectionPrompt, 2, 2),
                 null, cardSource);

@@ -223,7 +223,7 @@ public abstract class ZhuangShiPreparationPowerBase : ModPowerTemplate
         await base.AfterPlayerTurnStart(context, player);
         var hand = PileTypeExtensions.GetPile(PileType.Hand, player)?.Cards;
         if (player.Creature != Owner || Owner.IsDead || hand == null || hand.Count == 0) return;
-        var selected = (await CardSelectCmd.FromHand(context, player,
+        var selected = (await CardSelectCmd.FromHandForDiscard(context, player,
             new CardSelectorPrefs(new("cards", "zhuang_shi.select_discard"), 0, hand.Count), _ => true, this)).ToList();
         if (selected.Count == 0) return;
         // 原版批量弃牌会先弃完选中的牌，再触发狡黠自动打出。
@@ -333,7 +333,7 @@ public abstract class KuangGuPowerBase : ModPowerTemplate
     private async Task DiscardForEnergy(PlayerChoiceContext context)
     {
         if (Owner.IsDead || PileTypeExtensions.GetPile(PileType.Hand, Owner.Player)?.Cards.Count is not > 0) return;
-        var card = (await CardSelectCmd.FromHand(context, Owner.Player,
+        var card = (await CardSelectCmd.FromHandForDiscard(context, Owner.Player,
             new CardSelectorPrefs(new("cards", "kuang_gu_ao.select_discard"), 0, 1), _ => true, this)).FirstOrDefault();
         if (card == null) return;
         await CardCmd.Discard(context, card);

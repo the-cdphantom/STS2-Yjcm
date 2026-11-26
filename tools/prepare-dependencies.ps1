@@ -1,6 +1,6 @@
 param([Parameter(Mandatory)][ValidateSet('stable','beta')][string]$Variant,[Parameter(Mandatory)][string]$SourceDirectory)
 . (Join-Path $PSScriptRoot 'config.ps1')
-$version=if($Variant -eq 'stable'){'0.107.1'}else{'0.111.0'}
+$version=if($Variant -eq 'stable'){'0.111.0'}else{'0.114.0'}
 $target=Join-Path $script:RepositoryRoot "dependencies/$Variant-$version"
 $manifest=Get-Content -LiteralPath (Join-Path $target 'manifest.json') -Raw | ConvertFrom-Json
 foreach ($file in $manifest.files) {

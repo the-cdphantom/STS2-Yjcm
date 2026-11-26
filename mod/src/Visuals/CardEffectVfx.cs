@@ -28,27 +28,34 @@ internal static class CardEffectVfx
         ["XuRongXiongHuo"] = "徐荣凶镬", ["XuRongShaJue"] = "徐荣-杀绝",
         ["MouJiaXuFuMouYang"] = "谋贾诩阳和肃身", ["MouJiaXuSuShen"] = "谋贾诩阳和肃身",
         ["MouJiaXuFuMouYin"] = "谋贾诩阴和入世", ["MouJiaXuRuShi"] = "谋贾诩阴和入世",
-        ["LeCaiWenJiShuangQie"] = "乐蔡文姬", ["LeDiaoChanTanBan"] = "乐貂蝉"
+        ["LeCaiWenJiShuangQie"] = "乐蔡文姬", ["LeDiaoChanTanBan"] = "乐貂蝉",
+        ["ZhuGeJingZuYin"] = "诸葛京"
     };
-    private static Dictionary<string, Asset>? _catalog;
+    private static readonly Dictionary<string, Dictionary<string, Asset>> Catalogs = new(StringComparer.Ordinal);
     private static readonly Dictionary<string, GodotObject> DataCache = new(StringComparer.Ordinal);
     private static readonly HashSet<string> Failed = new(StringComparer.Ordinal);
     private static CanvasLayer? _active;
 
     // Exact model mapping; option cards and cards from other mods are never matched by title.
-    internal static (string Folder, string Animation)? Resolve(string typeName, CardType type)
+    internal static (string Folder, string Animation, string Root)? Resolve(string typeName, CardType type)
     {
-        if (type is not (CardType.Attack or CardType.Skill or CardType.Power)) return null;
         if (typeName.StartsWith("WeiDongZhuo", StringComparison.Ordinal)) typeName = typeName[11..];
         return CardFolders.TryGetValue(typeName, out var folder)
-            ? (folder, type == CardType.Attack ? "gongji" : "jineng") : null;
+            ? ResolveClip(folder, type, Root) : null;
     }
+
+    internal static (string Folder, string Animation, string Root)? ResolveClip(string folder, CardType type, string root) => type switch
+    {
+        CardType.Attack => (folder, "gongji", root),
+        CardType.Skill or CardType.Power => (folder, "jineng", root),
+        _ => null
+    };
 
     internal static float GetScale(string folder, float viewportWidth, float viewportHeight, float width, float height)
     {
         // JiaXu includes a scene plate: cover the viewport without stretching its aspect ratio.
         // Ordinary character effects retain the existing 72% framing.
-        return folder is "谋贾诩阳和肃身" or "谋贾诩阴和入世"
+        return folder is "谋贾诩阳和肃身" or "谋贾诩阴和入世" or "谋郭嘉阳" or "谋郭嘉阴"
             ? Math.Max(viewportWidth / width, viewportHeight / height)
             : Math.Min(viewportWidth * 0.72f / width, viewportHeight * 0.72f / height);
     }
@@ -59,17 +66,25 @@ internal static class CardEffectVfx
         // Include auto-play and derivative cards, but not replays of the same card execution.
         if (card.CurrentPlayIndex != 0 || card.GetType().Assembly != typeof(CardEffectVfx).Assembly) return;
         var resolved = Resolve(card.GetType().Name, card.Type);
-        if (resolved == null || Failed.Contains(resolved.Value.Folder)) return;
+        if (resolved == null) return;
+        var (folder, animation, root) = resolved.Value;
+        var bundlePath = Path.Combine(root, folder);
+        if (Failed.Contains(bundlePath)) return;
         CanvasLayer? layer = null;
         Node2D? sprite = null;
         try
         {
             if (NCombatRoom.Instance is not { } room || !ClassDB.ClassExists("SpineSprite")) return;
-            var (folder, animation) = resolved.Value;
-            _catalog ??= JsonSerializer.Deserialize<Asset[]>(File.ReadAllText(Path.Combine(Root, "index.json")),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!.ToDictionary(a => a.Folder, StringComparer.Ordinal);
-            var clip = _catalog[folder].Animations.Single(a => a.Name == animation);
-            var data = LoadData(folder);
+            if (!Catalogs.TryGetValue(root, out var catalog))
+            {
+                var index = Path.Combine(root, "index.json.txt");
+                if (!File.Exists(index)) index = Path.Combine(root, "index.json"); // Legacy local asset trees.
+                catalog = JsonSerializer.Deserialize<Asset[]>(File.ReadAllText(index),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!.ToDictionary(a => a.Folder, StringComparer.Ordinal);
+                Catalogs.Add(root, catalog);
+            }
+            var clip = catalog[folder].Animations.Single(a => a.Name == animation);
+            var data = LoadData(bundlePath);
             var raw = Instantiate("SpineSprite");
             if (raw is not Node2D node) { raw.Dispose(); throw new InvalidCastException("SpineSprite is not Node2D"); }
             sprite = node;
@@ -85,7 +100,8 @@ internal static class CardEffectVfx
                 float scale = GetScale(folder, viewport.X, viewport.Y, b.Width, b.Height);
                 sprite.Scale = new Vector2(scale, scale);
                 // Spine Y is up; Godot Canvas Y is down.
-                sprite.Position = viewport * 0.5f - new Vector2(b.CenterX, -b.CenterY) * scale;
+                sprite.Position = viewport * 0.5f - new Vector2(b.CenterX, -b.CenterY) * scale
+                    + new Vector2(0f, viewport.Y * clip.VerticalViewportOffset);
             }
             Layout();
             var viewportNode = room.GetViewport();
@@ -109,7 +125,7 @@ internal static class CardEffectVfx
         }
         catch (Exception ex)
         {
-            Failed.Add(resolved.Value.Folder); // One diagnostic per missing/invalid bundle, never a per-card log storm.
+            Failed.Add(bundlePath); // One diagnostic per missing/invalid bundle, never a per-card log storm.
             if (layer != null && GodotObject.IsInstanceValid(layer)) layer.QueueFree();
             else if (sprite != null && GodotObject.IsInstanceValid(sprite)) sprite.QueueFree();
             MainFile.Logger.Error($"卡牌特效播放失败（{resolved.Value.Folder}）：{ex}");
@@ -121,17 +137,17 @@ internal static class CardEffectVfx
         if (_active != null && GodotObject.IsInstanceValid(_active)) _active.Visible = false;
     }
 
-    private static GodotObject LoadData(string folder)
+    private static GodotObject LoadData(string bundlePath)
     {
-        if (DataCache.TryGetValue(folder, out var cached)) return cached;
+        if (DataCache.TryGetValue(bundlePath, out var cached)) return cached;
         var skeleton = Instantiate("SpineSkeletonFileResource");
         var atlas = Instantiate("SpineAtlasResource");
-        skeleton.Call("load_from_file", Path.Combine(Root, folder, "chuchang2.skel"));
-        atlas.Call("load_from_atlas_file", Path.Combine(Root, folder, "chuchang2.atlas"));
+        skeleton.Call("load_from_file", Path.Combine(bundlePath, "chuchang2.skel"));
+        atlas.Call("load_from_atlas_file", Path.Combine(bundlePath, "chuchang2.atlas"));
         var data = Instantiate("SpineSkeletonDataResource");
         data.Set("skeleton_file_res", skeleton);
         data.Set("atlas_res", atlas);
-        DataCache.Add(folder, data);
+        DataCache.Add(bundlePath, data);
         return data;
     }
 
@@ -149,6 +165,7 @@ internal static class CardEffectVfx
         public string Name { get; set; } = "";
         public float Duration { get; set; }
         public Bounds Focus { get; set; } = new();
+        public float VerticalViewportOffset { get; set; }
     }
     private sealed class Bounds
     {

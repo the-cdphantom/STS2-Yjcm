@@ -19,7 +19,11 @@ public sealed class ShangFangGuZhiYu : ModEventTemplate
         InitialPortraitPath: "res://Yjcm/Images/events/shang_fang_gu_zhi_yu.png");
 
     public override bool IsAllowed(IRunState runState) =>
-        ShangFangGuPartners.SunqianCard != null || ShangFangGuPartners.NewsanguoCard != null;
+        IsAllowedForScope(runState, WuZhugeliangSettings.ModEventScope);
+
+    internal static bool IsAllowedForScope(IRunState runState, string scope) =>
+        WuZhugeliangSettings.MatchesAnyPlayerScope(runState, scope)
+        && (ShangFangGuPartners.SunqianCard != null || ShangFangGuPartners.NewsanguoCard != null);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

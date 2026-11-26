@@ -27,7 +27,7 @@ public sealed class TunChu : WuZhugeliangCard
         [YjcmCardTags.WuJiang, YjcmCardTags.Shu];
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
-        [new DynamicVar(EnergyKey, 15m)];
+        [new EnergyVar(EnergyKey, 15)];
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
         [HoverTipFactory.FromPower<TunChuPower>()];

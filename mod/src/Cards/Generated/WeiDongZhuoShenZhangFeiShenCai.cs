@@ -85,11 +85,7 @@ public sealed class WeiDongZhuoShenZhangFeiShenCai : WeiDongZhuoCard
                 // 根据目标体力上限造成伤害，至少1点，不可格挡、不受能力影响
                 var hpDmg = (int)Math.Max(1, target.MaxHp * 0.15m);
                 await CreatureCmd.Damage(choiceContext, target, hpDmg,
-#if GAME_BETA
                     ValueProp.Unblockable | ValueProp.Unpowered, this, null);
-#else
-                    ValueProp.Unblockable | ValueProp.Unpowered, this);
-#endif
                 break;
 
             case CardType.Skill:
@@ -100,11 +96,7 @@ public sealed class WeiDongZhuoShenZhangFeiShenCai : WeiDongZhuoCard
             case CardType.Power:
                 await PowerCmd.Apply<StrengthPower>(choiceContext, target, -2, Owner.Creature, this, false);
                 if (target.Block > 0)
-#if GAME_BETA
                     await CreatureCmd.LoseBlock(choiceContext, target, target.Block, null);
-#else
-                    await CreatureCmd.LoseBlock(target, target.Block);
-#endif
                 break;
         }
     }

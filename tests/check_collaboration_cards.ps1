@@ -1,8 +1,8 @@
 param([ValidateSet('stable','beta')][string]$Variant)
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
-$version=if($Variant -eq 'stable'){'0.107.1'}else{'0.111.0'}
-foreach($name in @('GodotSharp','0Harmony','sts2','STS2-RitsuLib')) {
+$version=if($Variant -eq 'stable'){'0.111.0'}else{'0.114.0'}
+foreach($name in @('GodotSharp','0Harmony','sts2','STS2-RitsuLib','STS2-RitsuLib.Shared','STS2-RitsuLib.Ui','STS2-RitsuLib.Settings','STS2-RitsuLib.Runtime')) {
     [void][Reflection.Assembly]::LoadFrom((Join-Path $repo "dependencies/$Variant-$version/$name.dll"))
 }
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $repo "artifacts/staged/Yjcm.$version.dll"))
@@ -65,4 +65,15 @@ foreach($card in @($attack,$ability)) {
     $source=Get-Content -LiteralPath (Join-Path $repo "mod/src/Cards/$($card.GetType().Name).cs") -Raw
     Require ($source.Contains('CollaborationHoverTip.For(') -and $source.Contains('VoicePlayer.PlayWav(')) 'Card hover/voice must be wired'
 }
+$neifaSource=Get-Content -LiteralPath (Join-Path $repo 'mod/src/NewCards/WeiDongZhuoQunCards.cs') -Raw
+$neifaBlock=[regex]::Match($neifaSource,'public sealed class WeiDongZhuoYuanTanYuanShangYuanXiNeiFa[\s\S]*?\n}').Value
+Require ($neifaBlock.Contains('base(2, CardType.Skill') -and $neifaBlock.Contains('EnergyCost.UpgradeBy(-1)')) 'NeiFa cost and upgrade must remain unchanged'
+$discardPosition=$neifaBlock.IndexOf('await CardCmd.Discard(context, discarded)')
+foreach($blockedType in @('Skill','Attack')) {
+    $snapshotPosition=$neifaBlock.IndexOf("CountBlockedCards(hand.Cards, CardType.$blockedType)")
+    Require ($discardPosition -ge 0 -and $snapshotPosition -gt $discardPosition) 'NeiFa must count only after discard completes'
+    Require ($neifaBlock.IndexOf('await PowerCmd.Apply<NeiFaPower>', $snapshotPosition) -gt $snapshotPosition) 'Snapshot must precede power-apply hooks'
+}
+$neifaDescription=$cards.'YJCM_CARD_YUAN_TAN_YUAN_SHANG_YUAN_XI_NEI_FA.description'
+Require ($neifaDescription.Contains('张数等于弃牌后手中的技能牌数量') -and !$neifaDescription.Contains('X')) 'NeiFa must use the approved non-X allowance description'
 Write-Output "COLLABORATION_CARDS_OK variant=$Variant assertions=$script:checks"

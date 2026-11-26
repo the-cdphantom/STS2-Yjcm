@@ -28,13 +28,12 @@ public sealed class PangFengYiYiTong : WuZhugeliangCard
     {
         VoicePlayer.PlayWav(VoicePath);
 
-        var drawPile = PileTypeExtensions.GetPile(PileType.Draw, Owner);
-        if (drawPile?.Cards == null) return;
-
         var types = new[] { CardType.Attack, CardType.Skill, CardType.Power };
         foreach (var type in types)
         {
-            var candidates = drawPile.Cards.Where(c => c.Type == type).ToList();
+            var candidates = PileType.Draw.GetPile(Owner).Cards
+                .Concat(PileType.Discard.GetPile(Owner).Cards)
+                .Where(c => c.Type == type).ToList();
             if (candidates.Count == 0) continue;
 
             var card = Owner.RunState.Rng.CombatCardSelection.NextItem(candidates);

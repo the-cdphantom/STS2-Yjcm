@@ -1,0 +1,14 @@
+{
+  "YJCM_POWER_WEI_CAO_CAO_CHONG_YI_POWER.title": "崇义",
+  "YJCM_POWER_WEI_CAO_CAO_CHONG_YI_POWER.description": "每回合首张牌为攻击时摸2张牌并获得{energyPrefix:energyIcons(1)}。军合：回合结束时收回最后使用的攻击牌，保留并获得1层军合。",
+  "YJCM_POWER_WEI_CAO_CAO_CHONG_YI_POWER.smartDescription": "每回合首张牌为攻击时摸2张牌并获得{energyPrefix:energyIcons(1)}。军合：回合结束时收回最后使用的攻击牌，保留并获得1层军合。",
+  "YJCM_POWER_WEI_CAO_CAO_SU_JUN_POWER.title": "肃军",
+  "YJCM_POWER_WEI_CAO_CAO_SU_JUN_POWER.description": "使用牌后，手牌中的攻击牌与非攻击牌数量相等时摸2张牌。",
+  "YJCM_POWER_WEI_CAO_CAO_SU_JUN_POWER.smartDescription": "使用牌后，手牌中的攻击牌与非攻击牌数量相等时摸2张牌。",
+  "YJCM_POWER_WEI_CAO_CAO_ZHI_DUI_POWER.title": "智对",
+  "YJCM_POWER_WEI_CAO_CAO_ZHI_DUI_POWER.description": "当你使用牌时，若与上一张牌名字数与类型皆相同，则你选择：1.摸两张牌2.该牌免费打出。若均不相同，智对本回合失效",
+  "YJCM_POWER_WEI_CAO_CAO_ZHI_DUI_POWER.smartDescription": "当你使用牌时，若与上一张牌名字数与类型皆相同，则你选择：1.摸两张牌2.该牌免费打出。若均不相同，智对本回合失效",
+  "YJCM_POWER_WEI_CAO_CAO_GONG_TU_POWER.title": "宫图",
+  "YJCM_POWER_WEI_CAO_CAO_GONG_TU_POWER.description": "连续两张牌符合指定类型顺序时，摸2张牌。[gold]军合[/gold]强化后，额外获得{energyPrefix:energyIcons(1)}。",
+  "YJCM_POWER_WEI_CAO_CAO_GONG_TU_POWER.active_description": "连续两张牌符合指定类型顺序时，摸2张牌。[gold]军合[/gold]强化后，额外获得{energyPrefix:energyIcons(1)}。\n当前顺序：[gold]{First} → {Second}[/gold]"
+}

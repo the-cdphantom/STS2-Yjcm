@@ -37,6 +37,7 @@ public sealed class WeiDongZhuoShenPangTongFengLiaoYin : CardModel
 
     public WeiDongZhuoShenPangTongFengLiaoYin()
         : base(1, CardType.Attack, CardRarity.Token, TargetType.AllEnemies, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(WeiDongZhuoShenPangTongFengLiaoYin).Assembly.Location)!,
@@ -52,11 +53,7 @@ public sealed class WeiDongZhuoShenPangTongFengLiaoYin : CardModel
             await PowerCmd.Apply<LianHuanPower>(choiceContext, enemy, 5, Owner!.Creature, this, false);
 
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
-#if GAME_BETA
             .FromCard(this, cardPlay).TargetingAllOpponents(CombatState).Execute(choiceContext);
-#else
-            .FromCard(this).TargetingAllOpponents(CombatState).Execute(choiceContext);
-#endif
 
         // 阴牌打出后会被消耗，必须显式生成下一张阳牌，才能继续维持阴阳交替。
         var yangCard = Owner!.Creature.CombatState.CreateCard<WeiDongZhuoShenPangTongFengLiaoYang>(Owner);

@@ -1,9 +1,10 @@
+using STS2RitsuLib;
 using STS2RitsuLib.Telemetry;
 
 namespace Yjcm;
 
 /// <summary>
-/// 一将成名遥测注册入口，覆盖武诸葛亮与威董卓。只有玩家在 RitsuLib 授权界面明确同意后才会发送对应类别。
+/// 一将成名遥测注册入口，覆盖武诸葛亮、威董卓与威曹操。只有玩家在 RitsuLib 授权界面明确同意后才会发送对应类别。
 /// </summary>
 public static class WuZhugeliangTelemetry
 {
@@ -40,14 +41,14 @@ public static class WuZhugeliangTelemetry
                 Requests =
                 [
                     TelemetryRequest.BasicUsage(
-                        "发送游戏、模组和 RitsuLib 版本、操作系统、游戏语言及匿名安装 ID，用于统计版本兼容性和活跃安装量。"),
+                        "记录游戏与本 Mod 版本、系统、语言和匿名编号，用于了解各版本的游玩人数与适配情况。"),
                     TelemetryRequest.ModInventory(
-                        "发送当前已登记模组的 ID、版本、加载状态和玩法影响标记，用于排查模组冲突；不发送本地文件路径。"),
+                        "记录当前开启的 Mod 名称与版本（不含电脑文件路径），用于排查 Mod 之间的冲突。"),
                     TelemetryRequest.Diagnostics(
-                        "发送游戏进程捕获的 .NET 异常类型、脱敏后的消息与堆栈，以及 RitsuLib 运行状态，用于定位崩溃和兼容问题。"),
-                    TelemetryRequest.RunHistory(
-                        "发送非放弃跑局结束后的原版 run-history JSON（角色、卡组、遗物、路线、战斗和结算信息），用于分别分析武诸葛亮与威董卓的平衡性。",
-                        captureFilter: evt => !evt.IsAbandoned),
+                        "记录游戏报错与闪退信息（已自动隐藏个人路径），用于快速定位和修复 Bug。"),
+                    TelemetryRequest.RunHistoryFiltered(
+                        "记录正常结束对局的角色、卡组、遗物与通关结果（中途放弃不统计），用于调整武诸葛亮、威董卓和威曹操的平衡性。",
+                        captureFilter: context => context.SourceData is RunEndedEvent { IsAbandoned: false }),
                 ],
             });
 

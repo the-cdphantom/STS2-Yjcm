@@ -1,0 +1,10 @@
+{
+  "YJCM_CARD_WEI_CAO_CAO_WEI_CAO_ZHANG_NING_PAO.title": "威曹彰-凝袍",
+  "YJCM_CARD_WEI_CAO_CAO_WEI_CAO_ZHANG_NING_PAO.description": "弃置至多2张牌，摸等量的牌并获得1层[gold]缓冲[/gold]。所有队友也摸同样数量的牌并获得1层[gold]缓冲[/gold]。\n[gold]军合[/gold]：获得{energyPrefix:energyIcons(1)}。",
+  "YJCM_CARD_WEI_CAO_CAO_WEI_CAO_ZHANG_KUI_PAN.title": "威曹彰-溃叛",
+  "YJCM_CARD_WEI_CAO_CAO_WEI_CAO_ZHANG_KUI_PAN.description": "造成{Damage:diff()}点伤害。\n[gold]连招技-能力牌[/gold]：使你和目标同时失去6点生命，然后你将手牌摸至上限，选择1张攻击牌免费使用。你每有1名队友，使其[gold]重放[/gold]1次。",
+  "YJCM_CAO_CAO_COMBO_POWER.title": "连招技-能力牌",
+  "YJCM_CAO_CAO_COMBO_POWER.description": "这张牌需要紧跟在能力牌后才能触发连招。",
+  "YJCM_CARD_WEI_CAO_CAO_DESIGN.ning_pao_discard": "弃置至多2张手牌",
+  "YJCM_CARD_WEI_CAO_CAO_DESIGN.kui_pan_attack": "选择1张攻击牌免费使用"
+}

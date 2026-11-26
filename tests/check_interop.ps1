@@ -2,7 +2,7 @@ param([ValidateSet('stable','beta')][string]$Variant)
 $ErrorActionPreference='Stop'
 $dev=Split-Path $PSScriptRoot -Parent
 $workspace=$dev
-$version=if($Variant -eq 'stable') {'0.107.1'} else {'0.111.0'}
+$version=if($Variant -eq 'stable') {'0.111.0'} else {'0.114.0'}
 $source=Get-Content -LiteralPath (Join-Path $workspace 'mod\src\Interop\PublicApi.cs') -Raw
 if($source -match '#if GAME_BETA') { throw 'The JSON public API must be version-independent' }
 foreach($file in @('Interop\YjcmPublicApi.cs','Interop\SunqianUniverseInterop.cs','Settings\WuZhugeliangSettings.cs','Visuals\CardEffectVfx.cs','Visuals\ShiWeiYanVfx.cs','Monsters\MouSimaYiSpineVisuals.cs')) {

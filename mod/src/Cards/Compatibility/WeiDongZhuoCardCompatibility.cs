@@ -1,10 +1,8 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.ValueProps;
 using STS2RitsuLib.Scaffolding.Content;
 
 #nullable enable
@@ -40,20 +38,5 @@ public static class WeiDongZhuoShenCaiVariableSyncPatch
             foreach (var card in pile.Cards.OfType<WeiDongZhuoShenZhangFeiShenCai>())
                 card.SetJudgmentCount(count);
         }
-    }
-}
-
-// The original `is Sha` branch cannot match a sealed, independent Sha copy.
-// Reproduce precisely its owner/powered-attack predicate for this one new type only.
-[HarmonyPatch(typeof(ZhangLuBuDaoFan), nameof(ZhangLuBuDaoFan.ModifyDamageAdditive))]
-public static class WeiDongZhuoShaBuDaoFanPatch
-{
-    public static void Postfix(ZhangLuBuDaoFan __instance, ValueProp props,
-        Creature? dealer, CardModel? cardSource, ref decimal __result)
-    {
-        if (cardSource is not WeiDongZhuoSha || !props.IsPoweredAttack()) return;
-        var owner = __instance.Owner;
-        if (owner == null || (dealer != owner.Creature && cardSource.Owner != owner)) return;
-        __result += owner.Deck.Cards.Count(card => card.Tags.Contains(YjcmCardTags.WuJiang));
     }
 }

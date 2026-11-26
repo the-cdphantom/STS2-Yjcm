@@ -35,6 +35,7 @@ public sealed class ShenPangTongFengLiaoYin : CardModel
 
     public ShenPangTongFengLiaoYin()
         : base(1, CardType.Attack, CardRarity.Token, TargetType.AllEnemies, shouldShowInCardLibrary: false) { }
+    public override bool CanBeGeneratedInCombat => false;
 
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(ShenPangTongFengLiaoYin).Assembly.Location)!,

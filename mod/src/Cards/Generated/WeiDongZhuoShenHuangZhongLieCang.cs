@@ -55,11 +55,7 @@ public sealed class WeiDongZhuoShenHuangZhongLieCang : WeiDongZhuoCard
         var dmg = DynamicVars[DmgKey].BaseValue;
 
         // 造成伤害
-#if GAME_BETA
         var attack = await DamageCmd.Attack(dmg).FromCard(this, cardPlay).Targeting(target).Execute(choiceContext);
-#else
-        var attack = await DamageCmd.Attack(dmg).FromCard(this).Targeting(target).Execute(choiceContext);
-#endif
         var results = attack.Results.SelectMany(hit => hit).ToList();
         if (!results.Any(r => r.UnblockedDamage > 0))
             return; // 被完全格挡则不触发击伤

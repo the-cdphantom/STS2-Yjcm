@@ -1,0 +1,10 @@
+{
+  "YJCM_CARD_WEI_CAO_CAO_HU_BAN_CHONG_YI.title": "胡班-崇义",
+  "YJCM_CARD_WEI_CAO_CAO_HU_BAN_CHONG_YI.description": "每回合使用的第一张牌若为攻击牌，摸2张牌并获得{energyPrefix:energyIcons(1)}。\n[gold]军合[/gold]：回合结束时，若最后使用的是攻击牌，将其从弃牌堆收回手牌并保留，获得1层军合。",
+  "YJCM_CARD_WEI_CAO_CAO_XING_CAO_REN_SU_JUN.title": "星曹仁-肃军",
+  "YJCM_CARD_WEI_CAO_CAO_XING_CAO_REN_SU_JUN.description": "每次使用牌后，若手牌中攻击牌与非攻击牌的数量相等，摸2张牌。",
+  "YJCM_CARD_WEI_CAO_CAO_ZHONG_YU_ZHI_DUI.title": "钟毓-智对",
+  "YJCM_CARD_WEI_CAO_CAO_ZHONG_YU_ZHI_DUI.description": "当你使用牌时，若与上一张牌名字数与类型皆相同，则你选择：1.摸两张牌2.该牌免费打出。若均不相同，智对本回合失效",
+  "YJCM_CARD_WEI_CAO_CAO_SU_YUE_GONG_TU.title": "苏越-宫图",
+  "YJCM_CARD_WEI_CAO_CAO_SU_YUE_GONG_TU.description": "依次指定两种卡牌类型，连续使用的两张牌符合该顺序时，摸2张牌。\n[gold]军合[/gold]：上述效果额外获得{energyPrefix:energyIcons(1)}。"
+}

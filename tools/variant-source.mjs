@@ -11,7 +11,12 @@ export function canonicalCode(text) {
   return result + text.slice(last).replace(/\s/g, '');
 }
 export function selectVariant(text, variant) {
-  const defined = new Set(['WEI_DONG_ZHUO', ...(variant === 'beta' ? ['GAME_BETA'] : [])]);
+  // GAME_BETA is the historic name for the shared 0.111+ API surface.
+  const defined = new Set(['WEI_DONG_ZHUO', 'GAME_BETA']);
+  if (variant === 'beta') {
+    defined.add('GAME_V0113');
+    defined.add('GAME_V0114');
+  }
   const stack = []; const output = []; let active = true;
   for (const line of text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').split('\n')) {
     const directive = line.match(/^\s*#(if|else|endif)\b\s*(.*)$/);

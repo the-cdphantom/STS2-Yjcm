@@ -21,6 +21,9 @@ public static class YjcmPublicApi
 #if WEI_DONG_ZHUO
         or WeiDongZhuo
 #endif
+#if WEI_CAO_CAO
+        or WeiCaoCao
+#endif
         ;
     public static bool IsHuoGongPower(PowerModel? power) => power is HuoGongPower;
     public static PowerModel? GetHuoGongPower(Creature? creature) => creature?.Powers.OfType<HuoGongPower>().FirstOrDefault();

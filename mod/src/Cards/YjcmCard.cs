@@ -12,8 +12,9 @@ namespace Yjcm;
 /// 三国杀 Mod 卡牌基类：统一处理卡面路径
 /// </summary>
 [RegisterCard(typeof(WuZhugeliangCardPool), Inherit = true)]
-public abstract class WuZhugeliangCard(int cost, CardType type, CardRarity rarity, TargetType target) :
-    ModCardTemplate(cost, type, rarity, target)
+public abstract class WuZhugeliangCard(int cost, CardType type, CardRarity rarity, TargetType target,
+    bool shouldShowInCardLibrary = true) :
+    ModCardTemplate(cost, type, rarity, target, shouldShowInCardLibrary)
 {
     // 卡面路径：RitsuLib ID 去前缀后直接小写
     public override string CustomPortraitPath

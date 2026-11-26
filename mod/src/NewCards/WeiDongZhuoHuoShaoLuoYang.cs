@@ -42,7 +42,7 @@ public sealed class WeiDongZhuoDongZhuoHuoShaoLuoYang : WeiDongZhuoQunCard
         int requestedLoss = HuoShaoLuoYangRules.MaxHpLoss(
             maxHpBefore, (int)DynamicVars[MaxHpPercentKey].BaseValue);
         if (requestedLoss > 0)
-            await CreatureCmd.LoseMaxHp(context, Owner.Creature, requestedLoss, true);
+            await YjcmCreatureCompat.LoseMaxHp(context, Owner.Creature, requestedLoss, this);
 
         int actualMaxHpLost = Math.Max(0, maxHpBefore - Owner.Creature.MaxHp);
         decimal damage = HuoShaoLuoYangRules.DamagePerExhaustedCard(

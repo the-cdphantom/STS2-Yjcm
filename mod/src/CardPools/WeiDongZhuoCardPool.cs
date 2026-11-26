@@ -8,7 +8,7 @@ namespace Yjcm;
 public sealed class WeiDongZhuoCardPool : TypeListCardPoolModel
 {
     public override string Title => "weidongzhuo";
-    public override string EnergyColorName => "ironclad";
+    public override string EnergyColorName => "yjcm_dongzhuo";
     public override string CardFrameMaterialPath => "card_frame_weidongzhuo";
     public override Color DeckEntryCardColor => new("#B98A31");
     public override Color EnergyOutlineColor => new("#5A3825");

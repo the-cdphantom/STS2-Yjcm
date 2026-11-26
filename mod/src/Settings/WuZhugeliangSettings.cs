@@ -1,4 +1,5 @@
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Runs;
 using STS2RitsuLib;
 using STS2RitsuLib.Data;
 using STS2RitsuLib.Settings;
@@ -6,7 +7,7 @@ using STS2RitsuLib.Utils.Persistence;
 
 namespace Yjcm;
 
-/// <summary>武诸葛亮模组的持久化设置数据。</summary>
+/// <summary>一将成名模组的持久化设置数据。</summary>
 public sealed class WuZhugeliangSettingsData
 {
     public bool EnableEffects { get; set; } = true;
@@ -21,6 +22,9 @@ public sealed class WuZhugeliangSettingsData
 
     /// <summary>共享遗物进入新奖励和商店候选的角色范围。</summary>
     public string SharedRelicScope { get; set; } = "all_characters";
+
+    /// <summary>Mod 专属随机事件进入事件候选池的角色范围。</summary>
+    public string ModEventScope { get; set; } = "all_characters";
 
     /// <summary>谋司马懿战中同时存在尽瘁形态时优先播放哪一首曲目。</summary>
     public string MouSimaYiBgmPriority { get; set; } = "mou_sima_yi";
@@ -67,6 +71,8 @@ public sealed class WuZhugeliangSettingsData
 /// <summary>注册模组设置页并提供安全的运行时读取入口。</summary>
 public static class WuZhugeliangSettings
 {
+    internal const string AuthorHomepageUrl = "https://space.bilibili.com/323588945?spm_id_from=333.1007.0.0";
+    internal const string AuthorSponsorUrl = "https://ifdian.net/a/CDphantom";
     public const string AllCharacters = "all_characters";
     public const string OwnModCharacters = "own_mod_characters";
     public const string ModCharacters = "mod_characters";
@@ -113,6 +119,13 @@ public static class WuZhugeliangSettings
         SaveScope.Global,
         static settings => NormalizeScope(settings.SharedRelicScope, true),
         static (settings, value) => settings.SharedRelicScope = NormalizeScope(value, true));
+
+    private static readonly ModSettingsValueBinding<WuZhugeliangSettingsData, string> ModEventBinding = new(
+        MainFile.ModId,
+        DataKey,
+        SaveScope.Global,
+        static settings => NormalizeScope(settings.ModEventScope, true),
+        static (settings, value) => settings.ModEventScope = NormalizeScope(value, true));
 
     private static readonly ModSettingsValueBinding<WuZhugeliangSettingsData, string> BgmPriorityBinding = new(
         MainFile.ModId,
@@ -240,6 +253,7 @@ public static class WuZhugeliangSettings
     private static int _readFailureLogged;
     private static int _mouSimaYiReadFailureLogged;
     private static int _sharedRelicReadFailureLogged;
+    private static int _modEventReadFailureLogged;
     private static int _mediaReadFailureLogged;
     private static string? _pendingWuZhugeliangSkin;
     private static string? _pendingWeiDongZhuoSkin;
@@ -311,7 +325,28 @@ public static class WuZhugeliangSettings
         }
     }
 
-    /// <summary>复用四档范围归一化及先古/首领的程序集归属口径，但只判断指定玩家。</summary>
+    /// <summary>未完成注册或读取失败时，维持默认全角色可遇到 Mod 专属随机事件。</summary>
+    public static string ModEventScope
+    {
+        get
+        {
+            if (Volatile.Read(ref _registrationState) != 2)
+                return AllCharacters;
+
+            try
+            {
+                return ModEventBinding.Read();
+            }
+            catch (Exception ex)
+            {
+                if (Interlocked.Exchange(ref _modEventReadFailureLogged, 1) == 0)
+                    MainFile.Logger.Warn($"读取 Mod 专属事件设置失败，按默认全角色处理: {ex.Message}");
+                return AllCharacters;
+            }
+        }
+    }
+
+    /// <summary>按先古和首领使用的程序集归属规则判断指定角色，供扫荡和共享遗物使用。</summary>
     internal static bool MatchesCharacterScope(string scope, Type characterType) =>
         NormalizeScope(scope, true) switch
         {
@@ -320,6 +355,11 @@ public static class WuZhugeliangSettings
             NoCharacters => false,
             _ => true
         };
+
+    /// <summary>多人队伍中任一角色符合范围即可；用于 Mod 专属随机事件的准入判断。</summary>
+    internal static bool MatchesAnyPlayerScope(IRunState runState, string scope) =>
+        runState.Players.Any(player =>
+            MatchesCharacterScope(scope, player.Character.GetType()));
 
     public static string MouSimaYiBgmPriority =>
         ReadMediaSetting(BgmPriorityBinding, PreferMouSimaYiBgm);
@@ -562,10 +602,16 @@ public static class WuZhugeliangSettings
                 .WithModDisplayName(ModSettingsText.Literal("三国杀：一将成名mod"))
                 .WithVisibleOnHostSurfaces(
                     ModSettingsHostSurface.MainMenu | ModSettingsHostSurface.RunPause)
+                .AddSection("author", section => section
+                    .WithTitle(ModSettingsText.Literal("作者"))
+                    .AddButton("author_homepage", ModSettingsText.Literal("作者主页"),
+                        ModSettingsText.Literal("打开作者主页"), () => { Godot.OS.ShellOpen(AuthorHomepageUrl); })
+                    .AddButton("author_sponsor", ModSettingsText.Literal("赞助作者"),
+                        ModSettingsText.Literal("前往赞助"), () => { Godot.OS.ShellOpen(AuthorSponsorUrl); }))
                 .AddSection("visual_effects", section => section
                     .WithTitle(ModSettingsText.Literal("特效"))
                     .AddToggle("enable_effects", ModSettingsText.Literal("特效总开关"), EffectsBinding,
-                        ModSettingsText.Literal("统一开启或关闭本 Mod 的卡牌、连招、魏延和司马懿屏幕特效，不影响立绘、选牌界面和音效。")))
+                        ModSettingsText.Literal("统一控制本 Mod 的卡牌与连招特效（含威曹操的卡牌和窥判特效），以及魏延、司马懿的屏幕特效。立绘、选牌界面和音效独立保留。")))
                 .AddSection("anti_piracy_notice", section => section
                     .WithTitle(ModSettingsText.Literal("反盗版公告"))
                     .AddButton(
@@ -586,7 +632,7 @@ public static class WuZhugeliangSettings
                             new ModSettingsChoiceOption<string>(SweepModeRandomBattle, ModSettingsText.Literal("每场随机概率")),
                             new ModSettingsChoiceOption<string>(SweepModeOneClick, ModSettingsText.Literal("一键扫荡"))
                         ],
-                        ModSettingsText.Literal("仅当队伍中至少有一名武诸葛亮或威董卓时生效。自定义模式按战斗类型读取下方概率；每场随机模式会为该场生成一个 0%～100% 的概率；一键扫荡会让包括首领在内的所有初始敌人必定逃跑。联机时以队伍中首位本 Mod 角色玩家的设置为准。"),
+                        ModSettingsText.Literal("队伍中有武诸葛亮、威董卓或威曹操时生效。自定义模式按战斗类型读取下方概率。每场随机模式为该场生成 0%～100% 的逃跑概率。一键扫荡让包括首领在内的所有初始敌人必定逃跑。联机以队伍中编号最小的本 Mod 角色玩家的设置为准。"),
                         ModSettingsChoicePresentation.Dropdown)
                     .AddIntSlider(
                         "sweep_normal_chance",
@@ -627,7 +673,21 @@ public static class WuZhugeliangSettings
                             new ModSettingsChoiceOption<string>(ModCharacters, ModSettingsText.Literal("所有 Mod 角色")),
                             new ModSettingsChoiceOption<string>(NoCharacters, ModSettingsText.Literal("关闭"))
                         ],
-                        ModSettingsText.Literal("仅控制本 Mod 共享遗物进入之后新生成的随机奖励和商店候选；多人游戏按获得奖励的玩家角色判断。不会移除已有遗物，也不影响初始遗物、先古及事件保证奖励。联机时请所有玩家使用相同设置。"),
+                        ModSettingsText.Literal("控制之后生成的随机奖励、商店和宝箱。个人奖励按领取者判断，联机宝箱须全队符合范围。请在联机前统一设置。已有遗物、初始遗物及指定奖励沿用各自规则。"),
+                        ModSettingsChoicePresentation.Dropdown))
+                .AddSection("events", section => section
+                    .WithTitle(ModSettingsText.Literal("随机事件"))
+                    .AddChoice(
+                        "mod_event_scope",
+                        ModSettingsText.Literal("Mod 专属事件可遇见范围"),
+                        ModEventBinding,
+                        [
+                            new ModSettingsChoiceOption<string>(AllCharacters, ModSettingsText.Literal("全角色")),
+                            new ModSettingsChoiceOption<string>(OwnModCharacters, ModSettingsText.Literal("仅本 Mod 角色")),
+                            new ModSettingsChoiceOption<string>(ModCharacters, ModSettingsText.Literal("所有 Mod 角色")),
+                            new ModSettingsChoiceOption<string>(NoCharacters, ModSettingsText.Literal("关闭"))
+                        ],
+                        ModSettingsText.Literal("控制屈原投江、我要验牌、上方谷之雨、子午谷奇谋四个 Mod 专属随机事件是否进入候选池。多人游戏中队伍里至少一人符合即可出现；各端本地抽取，请在开局前统一档位。子午谷奇谋仍要求队伍中有武诸葛亮，上方谷之雨仍要求至少一张联动奖励牌。"),
                         ModSettingsChoicePresentation.Dropdown))
                 .AddSection("ancients", section => section
                     .WithTitle(ModSettingsText.Literal("先古之民"))

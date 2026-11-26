@@ -8,12 +8,20 @@
     <RootNamespace>Yjcm</RootNamespace>
     <!-- Both characters are always built. Keep the historic guard until its usages are audited. -->
     <DefineConstants>$(DefineConstants);WEI_DONG_ZHUO</DefineConstants>
-    <DefineConstants Condition="'$(Variant)' == 'beta'">$(DefineConstants);GAME_BETA</DefineConstants>
+    <!-- Historic symbol: shared 0.111+ API; GAME_V0113 remains beta-only. -->
+    <DefineConstants>$(DefineConstants);GAME_BETA</DefineConstants>
+    <DefineConstants Condition="'$(Variant)' == 'beta'">$(DefineConstants);GAME_V0113</DefineConstants>
+    <DefineConstants Condition="'$(Variant)' == 'beta'">$(DefineConstants);GAME_V0114</DefineConstants>
+    <DefineConstants>$(DefineConstants);WEI_CAO_CAO</DefineConstants>
     <OutputPath>$(RepositoryRoot)artifacts/bin/Yjcm/$(Variant)/$(Configuration)/</OutputPath>
+    <OutputPath Condition="'$(BuildFlavor)' == 'caocao'">$(RepositoryRoot)artifacts/caocao/bin/Yjcm/$(Variant)/$(Configuration)/</OutputPath>
   </PropertyGroup>
   <Import Project="../dependencies/GameReferences.props" />
   <ItemGroup>
     <Compile Include="src/**/*.cs" />
     <AdditionalFiles Include="Yjcm/localization/zhs/*.json" />
   </ItemGroup>
+  <Target Name="ValidateBuildFlavor" BeforeTargets="CoreCompile">
+    <Error Condition="'$(BuildFlavor)' != 'release' and '$(BuildFlavor)' != 'caocao'" Text="BuildFlavor must be release or caocao." />
+  </Target>
 </Project>

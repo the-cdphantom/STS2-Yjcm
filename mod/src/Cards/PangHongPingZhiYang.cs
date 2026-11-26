@@ -1,7 +1,11 @@
+using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
 using STS2RitsuLib.Interop.AutoRegistration;
@@ -9,7 +13,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 namespace Yjcm;
 
 /// <summary>
-/// 庞宏-评骘-阳：1费技能牌，转换技。2→3层虚弱+易伤，随机打出手牌中一张技能牌
+/// 庞宏-评骘-阳：1费技能牌，转换技。2→3层虚弱+易伤，自选打出手牌中一张技能牌。
 /// </summary>
 [RegisterCard(typeof(WuZhugeliangCardPool))]
 public sealed class PangHongPingZhiYang : WuZhugeliangCard
@@ -29,7 +33,7 @@ public sealed class PangHongPingZhiYang : WuZhugeliangCard
         new PowerVar<VulnerablePower>(2m)
     ];
 
-    private static bool _autoPlaying;
+    private static readonly AsyncLocal<Player?> SelectingPlayer = new();
 
     private static readonly string VoicePath = Path.Combine(
         Path.GetDirectoryName(typeof(PangHongPingZhiYang).Assembly.Location)!,
@@ -51,33 +55,45 @@ public sealed class PangHongPingZhiYang : WuZhugeliangCard
         await PowerCmd.Apply<WeakPower>(choiceContext, target, amount, Owner.Creature, this, false);
         await PowerCmd.Apply<VulnerablePower>(choiceContext, target, amount, Owner.Creature, this, false);
 
-        // 随机打出手牌中的一张技能牌（防递归）
-        if (!_autoPlaying)
-        {
-            var handPile = PileTypeExtensions.GetPile(PileType.Hand, Owner);
-            if (handPile?.Cards != null)
-            {
-                var skillCards = handPile.Cards
-                    .Where(c => c != this && c.Type == CardType.Skill)
-                    .ToList();
-
-                if (skillCards.Count > 0)
-                {
-                    var randomCard = Owner.RunState.Rng.CombatCardSelection.NextItem(skillCards);
-                    if (randomCard != null)
-                    {
-                        _autoPlaying = true;
-                        try { await CardCmd.AutoPlay(choiceContext, randomCard, target, AutoPlayType.Default, false, false); }
-                        finally { _autoPlaying = false; }
-                    }
-                }
-            }
-        }
+        await PlaySelectedHandCard(choiceContext, this, CardType.Skill, target);
 
         // 转换技：将阴形态加入抽牌堆（保留升级）
         var yinCard = CombatState.CreateCard<PangHongPingZhiYin>(Owner);
         if (IsUpgraded) yinCard.UpgradeInternal();
         await CardPileCmd.AddGeneratedCardToCombat(yinCard, PileType.Draw, Owner, CardPilePosition.Random);
+    }
+
+    internal static async Task PlaySelectedHandCard(PlayerChoiceContext choiceContext, CardModel source,
+        CardType type, Creature originalTarget)
+    {
+        var owner = source.Owner;
+        if (SelectingPlayer.Value == owner)
+            return;
+
+        bool CanSelect(CardModel card) => card != source && card.Type == type &&
+            !card.Keywords.Contains(CardKeyword.Unplayable);
+
+        if (!PileType.Hand.GetPile(owner).Cards.Any(CanSelect))
+            return;
+
+        string prompt = type == CardType.Attack ? "ping_zhi.attack_prompt" : "ping_zhi.skill_prompt";
+        var previous = SelectingPlayer.Value;
+        SelectingPlayer.Value = owner;
+        try
+        {
+            var chosen = (await CardSelectCmd.FromHand(choiceContext, owner,
+                new CardSelectorPrefs(new("cards", prompt), 1, 1), CanSelect, source)).FirstOrDefault();
+            if (chosen?.Pile?.Type != PileType.Hand)
+                return;
+
+            var target = chosen.TargetType == TargetType.AnyEnemy &&
+                owner.Creature.CombatState.HittableEnemies.Contains(originalTarget) ? originalTarget : null;
+            await CardCmd.AutoPlay(choiceContext, chosen, target);
+        }
+        finally
+        {
+            SelectingPlayer.Value = previous;
+        }
     }
 
     protected override void OnUpgrade()

@@ -2,8 +2,8 @@
 
 仅用于本机编译与回归，不随模组或 GitHub 源码分发游戏 DLL。
 
-- stable-0.107.1：固定稳定 API 快照。
-- beta-0.111.0：固定测试 API 快照。
+- stable-0.111.0：固定稳定 API 快照。
+- beta-0.114.0：固定测试 API 快照。
 - manifest.json：可公开的文件名和 SHA-256，不包含个人来源路径。
 - GameReferences.props：统一业务工程和测试工程的引用入口。
 

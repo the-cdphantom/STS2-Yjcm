@@ -4,9 +4,12 @@
     <Variant Condition="'$(Variant)' == ''">stable</Variant>
     <GameApiVariant>$(Variant)</GameApiVariant>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <BuildFlavor Condition="'$(BuildFlavor)' == ''">release</BuildFlavor>
     <BaseIntermediateOutputPath>$(RepositoryRoot)artifacts/obj/$(MSBuildProjectName)/$(Variant)/</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
     <BaseOutputPath>$(RepositoryRoot)artifacts/bin/$(MSBuildProjectName)/$(Variant)/</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BuildFlavor)' == 'caocao'">$(RepositoryRoot)artifacts/caocao/obj/$(MSBuildProjectName)/$(Variant)/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
 </Project>

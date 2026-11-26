@@ -11,6 +11,7 @@ export const CHARACTER_FILTERS = Object.freeze({
   all: "全部角色",
   wu_zhugeliang: "武诸葛亮",
   wei_dong_zhuo: "威董卓",
+  wei_caocao: "威曹操",
 });
 
 function isSimaYiId(value) {
@@ -177,6 +178,7 @@ function getRunCharacterIds(properties, run) {
 function characterFamily(value) {
   const id = String(value ?? "").toUpperCase();
   if (id.includes("WEI_DONG_ZHUO")) return "wei_dong_zhuo";
+  if (id.includes("WEI_CAO_CAO")) return "wei_caocao";
   if (id.includes("WU_ZHUGELIANG") || id === "CHARACTER.YJCM") return "wu_zhugeliang";
   return "other";
 }

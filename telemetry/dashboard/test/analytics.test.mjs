@@ -69,6 +69,31 @@ test("separates Wu Zhugeliang and Wei Dong Zhuo runs", () => {
   assert.equal(dongZhuoOnly.characterLabel, "威董卓");
 });
 
+test("separates Wei Cao Cao runs and keeps co-op teams visible", () => {
+  const caoCao = runEvent({
+    character: "CHARACTER.YJCM_CHARACTER_WEI_CAO_CAO",
+    duration: 900,
+  });
+  caoCao.properties.payload.applicant_payload.run_history.card_choices = [
+    { card: { id: "CARD.YJCM_CARD_WEI_CAO_CAO_TEST" }, was_picked: true },
+  ];
+  const only = buildDashboardData({ runEvents: [caoCao], characterFilter: "wei_caocao" });
+  assert.equal(only.runs.total, 1);
+  assert.equal(only.runs.averageDurationSeconds, 900);
+  assert.equal(only.characterLabel, "威曹操");
+  assert.equal(only.cards[0].id, "CARD.YJCM_CARD_WEI_CAO_CAO_TEST");
+
+  const mixed = runEvent({
+    character: "CHARACTER.YJCM_CHARACTER_WU_ZHUGELIANG",
+  });
+  mixed.properties.run_character_ids = [
+    "CHARACTER.YJCM_CHARACTER_WU_ZHUGELIANG",
+    "CHARACTER.YJCM_CHARACTER_WEI_CAO_CAO",
+  ];
+  assert.equal(buildDashboardData({ runEvents: [mixed], characterFilter: "wei_caocao" }).runs.total, 1);
+  assert.equal(buildDashboardData({ runEvents: [mixed], characterFilter: "wu_zhugeliang" }).runs.total, 1);
+});
+
 test("keeps co-op runs visible for every selected team character", () => {
   const event = runEvent();
   event.properties.run_character_ids = [

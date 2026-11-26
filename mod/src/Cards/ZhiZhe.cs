@@ -11,13 +11,13 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Yjcm;
 
 /// <summary>
-/// 智哲：1费技能牌，消耗。选择一张手牌复制并添加保留。升级后0费。
+/// 智哲：0费技能牌，消耗。选择一张手牌复制并添加保留。升级后固有。
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "STS001")]
 [RegisterCard(typeof(WuZhugeliangCardPool))]
 public sealed class ZhiZhe : WuZhugeliangCard
 {
-	public ZhiZhe() : base(1, CardType.Skill, CardRarity.Basic, TargetType.None)
+	public ZhiZhe() : base(0, CardType.Skill, CardRarity.Basic, TargetType.None)
 	{
 	}
 
@@ -57,6 +57,6 @@ public sealed class ZhiZhe : WuZhugeliangCard
 
 	protected override void OnUpgrade()
 	{
-		base.EnergyCost.UpgradeBy(-1);
+		AddKeyword(CardKeyword.Innate);
 	}
 }
